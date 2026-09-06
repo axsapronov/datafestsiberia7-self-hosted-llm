@@ -1,0 +1,85 @@
+/* ── Self-hosted LLM · Data Fest Siberia 7 ─────────────────────────────────
+   Светлый редакционный стиль, один акцент — sapphire.
+   Токены дизайна: всё ниже читает эти переменные.                          */
+
+:root {
+  --sapphire: #0f62fe; /* акцент */
+  --ink: #1f2430;      /* основной текст */
+  --ink-dim: #5a6472;  /* вторичный текст */
+  --surface: #ffffff;  /* фон карточек */
+  --border: #e3e7ee;   /* рамки */
+  --bg: #f8f9fb;       /* холст слайда (лёгкий off-white, чтобы белые карточки читались) */
+}
+
+/* Холст слайда */
+.slidev-layout {
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+  --slidev-code-font-size: 0.85em;
+}
+
+/* Обложка, секции и центрированные слайды получают тот же холст */
+.slidev-layout.cover,
+.slidev-layout.section,
+.slidev-layout.center,
+.slidev-layout.full,
+.slidev-layout.statement {
+  background: var(--bg);
+}
+
+/* Серифный дисплей для крупных заголовков (H1/H2); остальное — sans */
+.slidev-layout h1,
+.slidev-layout h2 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.08;
+}
+
+/* Вторичные заголовки */
+.slidev-layout h3,
+.slidev-layout h4 {
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+/* Таблицы: тонкие рамки, воздух, моно для числовых ячеек */
+.slidev-layout table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.slidev-layout th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 0.55rem 0.9rem;
+  border-bottom: 2px solid var(--sapphire);
+}
+.slidev-layout td {
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+.slidev-layout tr:last-child td {
+  border-bottom: none;
+}
+.slidev-layout td.num,
+.slidev-layout th.num {
+  font-family: 'Geist Mono', monospace;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Ссылки: приглушённый акцент вместо пунктира темы */
+.slidev-layout a {
+  color: var(--sapphire);
+  border-bottom: 1px solid color-mix(in srgb, var(--sapphire) 35%, transparent);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+.slidev-layout a:hover {
+  border-bottom-color: var(--sapphire);
+}
