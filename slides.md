@@ -88,7 +88,6 @@ title: Зачем собирать свою ИИ-инфраструктуру?
 
 <div class="hook-line">Компании хотят возврата инвестиций, так что открывайте кошелек шире</div>
 
-
 ---
 hideInToc: true
 class: timeline-slide
@@ -152,61 +151,202 @@ Cloud - чтобы быстро двигаться, Self-hosted - чтобы д�
 -->
 
 ---
-layout: section
-title: Какую инфраструктуру собирать?
+title: Что ожидают пользователи?
 ---
 
-<SectionCard kicker="" title="Какую инфраструктуру собирать?" tone="violet" />
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Что ожидают пользователи
+
+<img class="data-chart" src="/img/user-expectations.svg" alt="Ожидания 2026: скорость 80–100 ток/с, контекст 256k токенов, объём 50M токенов/сутки на чел., качество не хуже Claude 3.5 Sonnet, OpenAI/Anthropic-совместимый API, статистика и управление доступами">
+
+<div class="hook-line">Dogfooding — ключ к пониманию требований</div>
+
+<!--
+Требования сформулированы через dogfooding: моя команда первые месяцы работала через
+эту инфраструктуру, и «боль» стала списком требований. Поиск по Reddit и блогам 2026
+показал: это не «завышенные» запросы, а стандарт года.
+
+Скорость: 80–100 tok/s на одиночный запрос — нижняя граница «не раздражает».
+Опрос r/LocalLLaMA: 8–12 tok/s — минимум для кода, 15–25 — «терпимо для чата».
+8000 токенов при 16 tok/s = 8 минут на один ответ — точка, где бросают локальные модели.
+Overthinking (Qwen3.8, Simon Willison 2026-08-16) = 5–10× больше output = 5–10× дольше ожидание.
+
+Конкурентность: 3–4 человека одновременно без просадки — стандарт 2026 для команды
+3–4 разработчиков. Порог: «4+ concurrent users — vLLM batching wins» (Ollama 12 vs vLLM 80 tok/s).
+Агенты (pi.dev, Cursor, Kilo) создают 3–10 параллельных запросов на человека, а не 1.
+Люди прощают, что один запрос медленнее, но не прощают, что все запросы одновременно становятся медленными.
+
+Контекст: 256k — минимум для агентов-кодеров, а не «фича». Qwen3.6/3.8: 262k — дефолт.
+Но реальное ожидание — 256k + стабильное качество на всём протяжении («gets dumber as context fills»)
++ быстрый prefill (TTFT < 2–3 с на 100k input). Типичный агентский цикл: 50–100k input, 5k output, пик 200k.
+
+Объём: 100M токенов/день/человек — верхняя граница «агентского кодинга»
+(1–2M/день — уже реальность; 100M/день = $570K/год на API = ~$1M+/год экономии при масштабе).
+Для команды 3–4 человека — 300–400M токенов/день на кластер. Это точка, где стоимость API
+превышает стоимость железа — self-hosting становится бизнес-кейсом, а не хобби.
+
+API: OpenAI/Anthropic-совместимый — код-агенты (pi.dev, Cursor, Kilo) подключаются
+без смены клиента; в 2026 это де-факто стандарт, а не «фича».
+
+Статистика и управление доступами: счётчики токенов и запросов по пользователям
+и моделям, API-ключи — кто сколько сжёг и на какой модели (GPUStack).
+
+Главная боль 2026 (тред «I'm done with local LLMs for coding», 648 upvotes):
+не «локальная модель хуже Claude», а «локальная модель медленнее и менее предсказуема».
+Люди готовы на локальную модель, если: скорость ≥ 80–100 tok/s, контекст 256k без деградации,
+tool use на уровне Claude Code, и стабильные (не «иногда 30, иногда 5») 80+ tok/s.
+-->
+
+---
+title: Начало — запуск первой модели, ollama
+class: stepper-slide
+---
+
+# Начало — запуск первой модели, ollama
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+<FirstLaunchStepper />
+
+<div class="hook-line">ollama — отличный способ "начать", прямо сейчас</div>
+
+<!--
+Старт истории — «железо, которое есть». Tesla M40: 24GB вроде бы хватает,
+но очень шумная, очень медленная, без tensor-ядер, и NVIDIA её уже не поддерживает —
+запускать на ней что-то — само по себе геморрой.
+Берём с ollama модель, которая влезает в 24GB, запускаем — видим 10–20 tok/s
+с контекстом 16k. Работает. Но это не то, что нужно (спид 80–100 tok/s, контекст 256k).
+Отсюда начинается долгий путь.
+-->
+
+---
+title: Проблемы — шумит, тормозит, тупит
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Проблемы — шумит, тормозит, тупит
+
+<StageProblems stage="s1" />
+
+<div class="hook-line">Ollama «просто работает» — но дефолты собраны для демо, а не для команды</div>
+
+<!--
+Таблица: 6 параметров (СКОРОСТЬ, КОНТЕКСТ, ОБЪЁМ, КАЧЕСТВО, API, УПРАВЛЕНИЕ) —
+ожидание (слайд «Что ожидают пользователи») vs на этапе M40 + Ollama.
+Статус: ✓ — соответствует ожиданию, ~ — частично, ✗ — нет. S1 — почти весь столбец ✗:
+это «демо-рантайм», а не инфраструктура.
+Особенности этапа (3 карточки):
+1. Шум · M40 — 250W: вентилятор на 100% под нагрузкой, NVIDIA уже не поддерживает.
+2. Холодный старт — keep_alive 5m: модель выгружается из VRAM, следующий запрос платит загрузкой.
+3. Реплики — нет реестра: новый узел = скачать заново или копировать blobs вручную.
+Вывод: это не «Ollama сломан», а «Ollama — демо-рантайм». Путь — не тюнинг Ollama, а смена рантайма.
+TODO(спикер): контекст — 4096 (дефолт) или 16k (из заметок «Начало»)? quality — какая модель влезла в 24GB?
+-->
+
+
+---
+title: Идеи улучшений — больше видеокарт и llama.cpp
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Идеи улучшений — больше видеокарт и llama.cpp
+
+<StageIdeas stage="s1" />
+
+
+
+<!--
+Шесть идей — сетка 2×3, у каждой тег(и) параметра (цветная точка = палитра user-expectations.svg):
+01 consumer GPU: 3060 · 4070 Ti · 3090 — особенность · шум (M40 — 250W, вентилятор на 100%).
+02 llama.cpp + CUDA — [ОБЪЁМ, СКОРОСТЬ]: --parallel N — N слотов, у каждого свой контекст.
+03 контекст — подбираем сами — [КОНТЕКСТ]: num_ctx 4096 → --ctx-size под задачу, до 256K.
+04 модель держим в VRAM — [СКОРОСТЬ]: без keep_alive — нет холодных стартов.
+05 GPUStack — статистика — [УПРАВЛЕНИЕ]: счётчики токенов и запросов по моделям, пользователям, API-ключам.
+06 GPUStack — реплики — особенность · надёжность: replicas N + auto-restart после crash.
+Переход к следующему слайду: как это выглядело в железе — шаг за шагом.
+-->
+
+---
+title: Продолжение — пользователи, электричество, llama.cpp
+---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 
+# Продолжение — пользователи и электричество
+
+<div class="hw-grid">
+  <div class="hw-cell"><img src="/img/hardware/step-01.jpg" alt="№1. Два сервера по 3060+4070Ti+Xeon 3 поколения"></div>
+  <div class="hw-cell"><img src="/img/hardware/step-02.jpg" alt="№2 Удалось закупиться и появился 2 сервера , по 1x3090, и предыдущий 4070+4070.Тогда использали китайские материнские платы (хуанан). Пошли в gpustack"></div>
+  <div class="hw-cell hw-cell-label">
+    <div class="big">8×3090</div>
+    <div class="small">+ RAG-узел</div>
+    <div class="small">2×4070 Ti · 4×3060</div>
+  </div>
+</div>
 
 
+---
+title: Проблемы — 3060/4070 Ti + llama.cpp
+hideInToc: true
+---
 
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Проблемы — 3060/4070 Ti + llama.cpp
+
+<StageProblems stage="s2" />
+
+<div class="hook-line">TODO (спикер): hook-line</div>
+
+<!--
+TODO(спикер): данные S2 (3060/4070 Ti + llama.cpp) не собраны — все ячейки таблицы TODO.
+Особенности этапа: китайские материнские платы (хуанан), электричество, первые пользователи.
+Заполнить до финального экспорта.
+-->
+
+---
+title: Идеи — 3060/4070 Ti + llama.cpp
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Идеи — 3060/4070 Ti + llama.cpp
+
+<StageIdeas stage="s2" />
+
+<div class="hook-line">TODO (спикер): hook-line</div>
+
+<!--
+TODO(спикер): идеи S2 не собраны. Кандидаты: докупить 3090, TP, переход на vLLM.
+Заполнить до финального экспорта.
+-->
 
 
 
 ---
 layout: section
-title: Начало — запуск первой модели
+title: Стабильное состояние — агенты, балансер, vllm
 ---
 
-<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
+<SectionCard kicker="Часть 1" title="Стабильное состояние — агенты, балансер, vllm" tone="violet" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
 
 ---
 layout: section
-title: Продолжение — пользователи и электричество
+title: Выводы и советы
 ---
 
-<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
+<SectionCard kicker="Часть 3" title="Выводы и советы" tone="pink" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
-
----
-layout: section
-title: Текущее состояние — себестоимость
----
-
-<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
-
----
-layout: section
-title: Выводы
----
-
-<SectionCard kicker="Часть 3" title="Цена и мораль" tone="pink" />
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
-
 
 ---
 hideInToc: true
@@ -434,6 +574,55 @@ flowchart TB
 Каждая реплика — 2×3090, TP=2, MTP, конфиг из этой части.
 GPUStack управляет репликами и поднимает их после crash.
 RAG-узел — отдельное железо: 4070 Ti и 3060 под bge-m3, reranker и dev.
+-->
+
+---
+title: Проблемы — 8×3090 + vLLM + GPUStack
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Проблемы — 8×3090 + vLLM + GPUStack
+
+<StageProblems stage="s3" />
+
+<div class="hook-line">8×3090 — инфраструктура, а не «просто работает»: у каждого параметра есть цена</div>
+
+<!--
+Таблица: 6 параметров — ожидание vs на этапе 8×3090 + vLLM + GPUStack.
+S3: скорость ~ (75 tok/s на пользователя, 210 aggregate), контекст ✓ (256K),
+объём ✓ (1 млрд/сутки пик), качество ~ (Qwen3.8: TB 73, DeepSWE 42.2 — не ≥ Claude, но для своих задач хватает),
+API ✓ (vLLM OpenAI-совместимый), управление ✓ (GPUStack счётчики).
+Особенности этапа (3 карточки):
+1. MTP crash — vLLM 0.27.1: wild write, рантайм умер на 3-й день — лечится 0.28.0.
+2. Нет FP8 — Ampere: квант — AWQ (INT4), а не FP8.
+3. 24GB — потолок — max-num-seqs 2: 256K + 27B весов, параллельность 8 → 2 запроса.
+TODO(спикер): подтвердить черновик (75 tok/s, 1 млрд/сутки, Qwen3.8, MTP crash, max-num-seqs 2).
+-->
+
+---
+title: Идеи — 8×3090 + vLLM + GPUStack
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Идеи — 8×3090 + vLLM + GPUStack
+
+<StageIdeas stage="s3" />
+
+<div class="hook-line">Каждый параметр — своё решение: от MTP до собственного балансировщика</div>
+
+<!--
+Шесть идей — сетка 2×3, у каждой тег(и) параметра:
+01 MTP: 3 спекулятивных токена — [СКОРОСТЬ]: 18 → 45 tok/s (×2.5) на 3090.
+02 256K контекст — [КОНТЕКСТ]: --max-model-len 262144, KV-cache ~18GB.
+03 OMP_NUM_THREADS=1, без async scheduling — [СКОРОСТЬ]: TTFT 4.2s → 1.8s.
+04 vLLM 0.28.0 — особенность · надёжность: фикс MTP crash — стабильность 24/7.
+05 свой балансировщик (Go, 400 строк) — [СКОРОСТЬ, ОБЪЁМ]: least-loaded + prefix-aware, P99 8.7s → 3.2s.
+06 мониторинг с первого дня — [УПРАВЛЕНИЕ]: Prometheus + Grafana + GPUStack: алерты, а не логи.
+Переход к детализации: Первый запуск 18 tok/s → Тюнинг → Финальный конфиг → NGINX → Бенчмарк → Тономика («Цена»).
 -->
 
 ---

@@ -257,6 +257,18 @@
   text-align: center;
 }
 
+/* Слайд «Начало»: степпер из 5 шагов (FirstLaunchStepper) — прижат под
+   заголовок (как .data-chart и .hw-grid на соседних слайдах), чтобы верх
+   совпадал с ними; footer (hook-line) — общим правилом .hook-line */
+.slidev-layout.stepper-slide {
+  display: flex;
+  flex-direction: column;
+}
+.slidev-layout.stepper-slide .fls-row {
+  align-items: flex-start;
+  margin-top: 0.5rem;
+}
+
 /* Слайд с регуляторным таймлайном: компактный трек (~58% высоты слайда),
    по центру между заголовком и footer; footer (hook-line) — общий правилом
    .hook-line, прижат к нижнему краю */
@@ -404,7 +416,7 @@
 /* Колонки two-cols: план (Toc) — 60%, карточка докладчика — 40%
    (two-cols — grid grid-cols-2, переопределяем grid-template-columns) */
 .slidev-layout.two-columns {
-  grid-template-columns: 60% 40%;
+  grid-template-columns: 65% 35%;
 }
 
 /* План (Toc): нумерованный список — mono-номера, ink-титлы, hairline */
