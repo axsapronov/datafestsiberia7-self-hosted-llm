@@ -66,6 +66,7 @@
 /* Холст слайда: белый фон + Stripe-style top-mesh (многоцветный градиент сверху,
    перетекающий в холст к середине) */
 .slidev-layout {
+  position: relative;
   background: var(--slide-top-mesh), var(--canvas);
   color: var(--body);
   font-family: var(--font-sans);
@@ -118,6 +119,13 @@
 }
 .slidev-layout ul {
   list-style: disc;
+}
+
+/* Заголовки слайдов без двухколонок — по центру.
+   ::left::/::right:: в layout two-cols оборачиваются в div.col-left/col-right,
+   поэтому в колонках правило не срабатывает. */
+.slidev-layout:not(.two-columns) > h1 {
+  text-align: center;
 }
 
 /* Таблицы: hairline-разделители, тёмная линия под шапкой */
@@ -190,17 +198,81 @@
   color: var(--muted);
 }
 
-/* Риторический акцент: Inter 600, ink, редкий accent-бордер слева */
+/* Источник данных: fine-print, mono, muted-soft — под колонкой с цифрами */
+.src {
+  margin-top: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  color: var(--muted-soft);
+}
+
+/* Данные-графики (SVG из public/img): заполняют колонку, прозрачный фон */
+.data-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.data-chart-wrap {
+  margin-top: 0.3rem;
+}
+
+/* Цитата: поверхность surface-card + mono-атрибуция (подпись автора) */
+.quote-card {
+  background: var(--surface-card);
+  border-radius: 12px;
+  padding: 1.1rem 1.3rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.quote-attr {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* Риторический акцент (footer): Inter 500, ink, редкий accent-бордер слева.
+   Прижат к нижнему краю слайда (absolute) — всегда на границе, никогда не
+   уходит за неё, независимо от высоты контента. left/right = гориз. padding
+   слайда (px-14 = 3.5rem), bottom — чуть выше номера слайда. */
 .hook-line {
-  margin-top: 1.6rem;
-  font-size: 1.5rem;
+  position: absolute;
+  left: 3.5rem;
+  right: 3.5rem;
+  bottom: 1rem;
+  margin-top: 0;
+  font-size: 1.1rem;
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: -0.02em;
   color: var(--ink);
   border-left: 3px solid var(--accent);
   padding-left: 1rem;
-  max-width: 46rem;
+  text-align: center;
+}
+
+/* Слайд с регуляторным таймлайном: компактный трек (~58% высоты слайда),
+   по центру между заголовком и footer; footer (hook-line) — общий правилом
+   .hook-line, прижат к нижнему краю */
+.slidev-layout.timeline-slide {
+  display: flex;
+  flex-direction: column;
+}
+.slidev-layout.timeline-slide .rt {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+}
+.slidev-layout.timeline-slide .rt-track {
+  width: 100%;
+  height: 320px;
 }
 
 /* Тёмная закрывающая плитка (аналог footer): фон — в layout center-dark */

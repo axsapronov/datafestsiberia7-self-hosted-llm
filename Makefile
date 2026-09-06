@@ -4,10 +4,10 @@ install:
 	pnpm install
 	pnpm add -D playwright-chromium
 
-run:
+run: img
 	pnpm run dev
 
-build: pdf pptx
+build: img pdf pptx
 
 pdf:
 	pnpm run export
@@ -20,3 +20,6 @@ check:
 
 clean:
 	rm -rf dist *.pdf *.pptx slides-export.pptx
+
+img:
+	uv run python setup/gen_ai_spend_chart.py

@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 332" role="img" aria-label="Схема гибридной инфраструктуры: левая половина — Cloud (чтобы быстро двигаться: frontier-модели, сложный reasoning, пики трафика, эксперименты), правая — Self-hosted (чтобы долго двигаться: рутина, приватные данные, 24/7-нагрузка, без лимитов и счёта); на шве — сшитый фрукт: половинка апельсина и половинка яблока; гибрид закрывает юридические, финансовые и репутационные риски">
+  <defs>
+    <linearGradient id="hy-capsule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#eff6ff"/>
+      <stop offset="0.5" stop-color="#eff6ff"/>
+      <stop offset="0.5" stop-color="#ecfdf5"/>
+      <stop offset="1" stop-color="#ecfdf5"/>
+    </linearGradient>
+    <filter id="hy-shadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#111111" flood-opacity="0.28"/>
+    </filter>
+    <radialGradient id="hy-fruit-orange" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#ffc061"/>
+      <stop offset="0.4" stop-color="#ff9d24"/>
+      <stop offset="0.75" stop-color="#f2820e"/>
+      <stop offset="1" stop-color="#cf6604"/>
+    </radialGradient>
+    <radialGradient id="hy-fruit-green" cx="0.64" cy="0.3" r="1">
+      <stop offset="0" stop-color="#c4dc74"/>
+      <stop offset="0.4" stop-color="#9cc24a"/>
+      <stop offset="0.75" stop-color="#74a330"/>
+      <stop offset="1" stop-color="#517c1c"/>
+    </radialGradient>
+    <linearGradient id="hy-stem" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9a6a35"/>
+      <stop offset="0.5" stop-color="#7a4d20"/>
+      <stop offset="1" stop-color="#573212"/>
+    </linearGradient>
+    <radialGradient id="hy-rim" cx="0.5" cy="0.42" r="0.62">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.72" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.92" stop-color="#3a2404" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#241502" stop-opacity="0.36"/>
+    </radialGradient>
+    <radialGradient id="hy-hl" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hy-seamL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="hy-seamR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="hy-orange-dots" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(8)">
+      <circle cx="2" cy="3" r="0.7" fill="#b35c05" opacity="0.5"/>
+      <circle cx="6" cy="6" r="0.6" fill="#b35c05" opacity="0.4"/>
+      <circle cx="4.5" cy="8" r="0.5" fill="#ffd98f" opacity="0.5"/>
+    </pattern>
+    <pattern id="hy-green-dots" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-6)">
+      <circle cx="3" cy="4" r="0.6" fill="#e6f2b8" opacity="0.5"/>
+      <circle cx="7" cy="7" r="0.5" fill="#4e7a1a" opacity="0.35"/>
+    </pattern>
+    <clipPath id="hy-fruit-clip">
+      <ellipse cx="440" cy="120" rx="32" ry="34"/>
+    </clipPath>
+  </defs>
+
+  <g font-family="Inter, -apple-system, 'Segoe UI', sans-serif">
+
+    <!-- ── Капсула: Cloud | Self-hosted ─────────────────────────────── -->
+    <rect x="40" y="8" width="800" height="224" rx="16" fill="url(#hy-capsule)" stroke="#e5e7eb" stroke-width="1"/>
+
+    <!-- шов: пунктир «строчка» -->
+    <line x1="440" y1="16" x2="440" y2="224" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5 7"/>
+
+    <!-- Cloud -->
+    <g transform="translate(191.5 44)">
+      <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a4 4 0 0 0 0-8z" fill="#3b82f6"/>
+    </g>
+    <text x="225.5" y="64" font-size="24" font-weight="600" letter-spacing="-0.02em" fill="#111111">Cloud</text>
+
+    <!-- Self-hosted -->
+    <g transform="translate(561.5 44)">
+      <rect x="0" y="2" width="24" height="9" rx="2.5" fill="#10b981"/>
+      <rect x="0" y="13" width="24" height="9" rx="2.5" fill="#10b981"/>
+      <circle cx="4.5" cy="6.5" r="1.4" fill="#ffffff"/>
+      <circle cx="4.5" cy="17.5" r="1.4" fill="#ffffff"/>
+      <rect x="12" y="5.5" width="8" height="2" rx="1" fill="#ffffff" opacity="0.85"/>
+      <rect x="12" y="16.5" width="8" height="2" rx="1" fill="#ffffff" opacity="0.85"/>
+    </g>
+    <text x="595.5" y="64" font-size="24" font-weight="600" letter-spacing="-0.02em" fill="#111111">Self-hosted</text>
+
+    <!-- taglines -->
+    <text x="240" y="96" font-size="15" fill="#6b7280" text-anchor="middle">чтобы быстро двигаться</text>
+    <text x="640" y="96" font-size="15" fill="#6b7280" text-anchor="middle">чтобы долго двигаться</text>
+
+    <!-- Cloud chips -->
+    <g>
+      <rect x="72"  y="116" width="158" height="32" rx="16" fill="#ffffff" stroke="#e5e7eb"/>
+      <rect x="250" y="116" width="158" height="32" rx="16" fill="#ffffff" stroke="#e5e7eb"/>
+      <rect x="72"  y="160" width="158" height="32" rx="16" fill="#ffffff" stroke="#e5e7eb"/>
+      <rect x="250" y="160" width="158" height="32" rx="16" fill="#ffffff" stroke="#e5e7eb"/>
+      <g font-size="13" font-weight="500" fill="#374151" text-anchor="middle">
+        <text x="151" y="137">frontier-модели</text>
+        <text x="329" y="137">сложный reasoning</text>
+        <text x="151" y="181">пики трафика</text>
+        <text x="329" y="181">эксперименты</text>
+      </g>
+    </g>
+
+    <!-- Self-hosted chips -->
+    <g>
+      <rect x="472" y="116" width="158" height="32" rx="16" fill="#ffffff" stroke="#e5e7eb"/>
+      <rect x="650" y="116" width="158" height="32" rx="16" fill="#ffffff" stroke="#e5e7eb"/>
+      <rect x="472" y="160" width="158" height="32" rx="16" fill="#ffffff" stroke="#e5e7eb"/>
+      <rect x="650" y="160" width="158" height="32" rx="16" fill="#ffffff" stroke="#e5e7eb"/>
+      <g font-size="13" font-weight="500" fill="#374151" text-anchor="middle">
+        <text x="551" y="137">рутина</text>
+        <text x="729" y="137">приватные данные</text>
+        <text x="551" y="181">24/7-нагрузка</text>
+        <text x="729" y="181">без лимитов и счёта</text>
+      </g>
+    </g>
+
+    <!-- фрукт-гибрид на шве: половинка апельсина + половинка яблока, сшитые булавками -->
+    <g filter="url(#hy-shadow)">
+      <!-- черенок (за верхом плода) -->
+      <g transform="rotate(7 441 88)">
+        <path d="M437,92 C435,80 438,70 442,65 C445,62 449,63 449.5,66 C450.5,72 448,82 446,92 Z" fill="url(#hy-stem)"/>
+        <path d="M439,90 C438,80 440,71 443,66" fill="none" stroke="#c08a4e" stroke-width="1.5" opacity="0.55" stroke-linecap="round"/>
+      </g>
+
+      <!-- зелёная основа (весь плод) -->
+      <ellipse cx="440" cy="120" rx="32" ry="34" fill="url(#hy-fruit-green)"/>
+
+      <!-- оранжевая левая половина -->
+      <path d="M440,86 C435,102 445,118 439,132 C435,142 441,149 440,154 A32,34 0 0 1 440,86 Z" fill="url(#hy-fruit-orange)"/>
+
+      <g clip-path="url(#hy-fruit-clip)">
+        <!-- текстуры -->
+        <path d="M440,86 C435,102 445,118 439,132 C435,142 441,149 440,154 A32,34 0 0 1 440,86 Z" fill="url(#hy-orange-dots)"/>
+        <rect x="440" y="86" width="32" height="68" fill="url(#hy-green-dots)"/>
+
+        <!-- тень у шва -->
+        <rect x="430" y="86" width="10" height="68" fill="url(#hy-seamL)"/>
+        <rect x="440" y="86" width="10" height="68" fill="url(#hy-seamR)"/>
+
+        <!-- тёмный край -->
+        <ellipse cx="440" cy="120" rx="32" ry="34" fill="url(#hy-rim)"/>
+
+        <!-- блики -->
+        <ellipse cx="427" cy="105" rx="14" ry="11" fill="url(#hy-hl)" transform="rotate(-18 427 105)"/>
+        <ellipse cx="452" cy="101" rx="9" ry="7" fill="url(#hy-hl)" opacity="0.5" transform="rotate(12 452 101)"/>
+        <ellipse cx="440" cy="148" rx="22" ry="6" fill="url(#hy-hl)" opacity="0.22"/>
+      </g>
+
+      <!-- линия шва -->
+      <path d="M440,86 C435,102 445,118 439,132 C435,142 441,149 440,154" fill="none" stroke="#5b3a10" stroke-width="1.5" opacity="0.5"/>
+
+      <!-- углубление под черенком -->
+      <ellipse cx="441" cy="88" rx="5" ry="2.5" fill="#4a2c0c" opacity="0.45"/>
+
+      <!-- булавки через шов -->
+      <g stroke-linecap="round">
+        <g stroke="#2f2410" stroke-width="1.8" opacity="0.28" transform="translate(1 1.5)">
+          <line x1="431" y1="102" x2="449" y2="105"/>
+          <line x1="430" y1="120" x2="450" y2="119"/>
+          <line x1="431" y1="138" x2="449" y2="135"/>
+        </g>
+        <g stroke="#9aa0a6" stroke-width="1.8">
+          <line x1="431" y1="102" x2="449" y2="105"/>
+          <line x1="430" y1="120" x2="450" y2="119"/>
+          <line x1="431" y1="138" x2="449" y2="135"/>
+        </g>
+        <g fill="#b9bec4" stroke="#6d737a" stroke-width="0.8">
+          <circle cx="449" cy="105" r="2"/>
+          <circle cx="430" cy="120" r="2"/>
+          <circle cx="449" cy="135" r="2"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- ── Риски, которые закрывает гибрид ──────────────────────────── -->
+    <text x="40" y="252" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" letter-spacing="0.08em" fill="#898989">РИСКИ, КОТОРЫЕ ЗАКРЫВАЕТ ГИБРИД</text>
+
+    <g>
+      <rect x="40"  y="264" width="260" height="56" rx="12" fill="#f5f5f5" stroke="#e5e7eb"/>
+      <rect x="320" y="264" width="260" height="56" rx="12" fill="#f5f5f5" stroke="#e5e7eb"/>
+      <rect x="600" y="264" width="260" height="56" rx="12" fill="#f5f5f5" stroke="#e5e7eb"/>
+    </g>
+    <g>
+      <g transform="translate(58 283) scale(1.1)">
+        <path d="M8 0.8 L14.6 3.4 V8.2 C14.6 12.6 11.8 15.4 8 17 C4.2 15.4 1.4 12.6 1.4 8.2 V3.4 Z" fill="#10b981"/>
+        <path d="M4.8 8.4 L7.2 10.8 L11.4 6.2" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g transform="translate(338 283) scale(1.1)">
+        <path d="M8 0.8 L14.6 3.4 V8.2 C14.6 12.6 11.8 15.4 8 17 C4.2 15.4 1.4 12.6 1.4 8.2 V3.4 Z" fill="#10b981"/>
+        <path d="M4.8 8.4 L7.2 10.8 L11.4 6.2" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g transform="translate(618 283) scale(1.1)">
+        <path d="M8 0.8 L14.6 3.4 V8.2 C14.6 12.6 11.8 15.4 8 17 C4.2 15.4 1.4 12.6 1.4 8.2 V3.4 Z" fill="#10b981"/>
+        <path d="M4.8 8.4 L7.2 10.8 L11.4 6.2" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+    <g>
+      <text x="86"   y="289" font-size="15" font-weight="600" fill="#111111">Юридические</text>
+      <text x="86"   y="309" font-size="12" fill="#6b7280">данные не уходят третьим сторонам</text>
+      <text x="366"  y="289" font-size="15" font-weight="600" fill="#111111">Финансовые</text>
+      <text x="366"  y="309" font-size="12" fill="#6b7280">предсказуемая стоимость</text>
+      <text x="646"  y="289" font-size="15" font-weight="600" fill="#111111">Vendor lock</text>
+      <text x="646"  y="309" font-size="12" fill="#6b7280">независимость от провайдера</text>
+    </g>
+
+  </g>
+</svg>

@@ -46,9 +46,9 @@ layout: two-cols
 hideInToc: true
 ---
 
-# План доклада
-
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# План доклада
 
 ::left::
 
@@ -65,33 +65,89 @@ hideInToc: true
 </div>
 
 ---
-layout: section
-title: Почему self-hosted LLM
+hideInToc: true
 ---
 
-<SectionCard kicker="Раздел 1" title="Почему self-hosted LLM" tone="emerald" />
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# ИИ в 2026 — удобная и дорогая технология
+
+<img class="data-chart" src="/img/ai-spend-milestones.svg" alt="AI Spend per Employee vs Model Releases and Technology Milestones, Ramp AI Index Top 1% 2023–2026: flat 2023–2024 (~$160/employee), 4× growth mid-2025 ($2,470), explosion to ~$9,000 by Sep 2026">
+
+<!--
+ИИ - это дорогая технология, которая стремится снизить себестоимость на масштабе.
+Идея «удобная и дорогая технология» — на графике Ramp Top-1% ($/сотрудник/мес). Три фазы:
+1) 2023 – early 2025 — FLAT, ~$160: Chat + RAG, удобно, но расход плоский;
+2) mid-2025 – early 2026 — ACCELERATION, 4× YoY до $2,470: Claude Code + MCP + Computer Use — первый настоящий agentic era;
+3) mid-2026 → — EXPLOSION, ~$9,000: frontier agents, 1M+ context, GPT-6 Astra.
+Каждая эра (Chat → ReAct → Reasoning → Agents → Multi-agent → Computer Use → Frontier)
+умножает токенов на задачу в ~10×, и каждая ключевая модель (GPT-5, Claude, Gemini, GPT-6) —
+новая ступень расхода. Удобно: агенты делают работу. Дорого: платит вся компания — «AI tax».
+-->
+
+<div class="hook-line">Компании хотят возврата инвестиций, так что открывайте кошелек шире</div>
+
+
+---
+hideInToc: true
+class: timeline-slide
+---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# IT в 2026 — полоса юридических препятствий
+
+<RegulatoryTimeline />
+
+
+<div class="hook-line">Для данных существуют границы и незаконное пересечение имеет последствия</div>
+
+<!--
+
+Риски
+- Юридические
+- Финансовые
+- Репутационные
+-->
+
+<!--
+Полный регуляторный таймлайн (даты вступления в силу):
+2000 COPPA (США, дети <13) · 2002 ePrivacy (ЕС, cookies) · 2006 152-ФЗ (РФ, ПДн)
+2014 242-ФЗ (РФ, локализация ПДн) · 2018 GDPR (ЕС, штрафы до 4% выручки, DPO, 72ч)
+2020 CCPA (США) + Schrems II (CJEU, недействителен Privacy Shield → только SCC + TIA)
+2020 LGPD (Бразилия) · 2021 PIPL (Китай, до 5% выручки)
+2023 DPDP (Индия) + 12+ штатов США (VCDPA, CPA, CTDPA, OCPA, UCPA, ICPA)
+2024 EU AI Act (риск-модель) · 2025 420-ФЗ (РФ, штрафы до 500 млн ₽ / 3% выручки, уголовка до 10 лет)
+2025 EU Data Act (portability, cloud switching) · 2026 EU AI Act — full application (high-risk, Art. 50)
+
+Ключевой нарратив: IT-отрасль прошла путь от «wild west» до heavily regulated industry.
+IT-компания сегодня обязана иметь: consent-менеджмент, data localization, breach notification
+(72ч в ЕС / 24ч в РФ), DPO, transfer impact assessments (Schrems II), AI governance,
+audit trails, right to be forgotten. Это не опциональная надстройка, а базовый compliance-контур.
+-->
 
 ---
 hideInToc: true
 ---
 
-# Момент, когда API стал болью
-
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-<v-clicks>
-- Март 2026: счёт за Claude API — **$4,200 в месяц**
-- Код-агент: ~200K токенов за сессию, 10 сессий в день — **2 млн токенов/день**
-- Через API — ощутимые деньги каждый день. По локальному — электричество
-</v-clicks>
+# Гибридная инфраструктура — способ решения
 
-<div class="hook-line">Я перестал быть пользователем API и стал оператором инфраструктуры.</div>
+<img class="data-chart" src="/img/hybrid-infra.svg" alt="Схема гибрида: Cloud (быстро) + Self-hosted (надежно), закрытые риски">
+
+<div class="hook-line">Cloud — чтобы быстро двигаться, self-hosted — чтобы долго двигаться</div>
 
 <!--
-Хук: конкретный счёт, а не «API дорогой». Агент сжигает больше токенов, чем мы зарабатываем.
-После этого агент работает в air-gapped среде — без лимитов провайдера и чужого uptime.
+Cloud - чтобы быстро двигаться, Self-hosted - чтобы долго двигаться
+
+- **Cloud** — frontier-модели: сложный reasoning, пики трафика, эксперименты
+- **Self-hosted** — рутина, приватные данные, 24/7-нагрузка: без лимитов и без счёта
+
+Риски
+- Юридические
+- Финансовые
+- Репутационные
 -->
 
 ---
@@ -121,33 +177,37 @@ hideInToc: true
 </v-clicks>
 
 <!--
-«API дорогой, локально дешевле» — скучная аргументация. Для нас критичны три вещи:
-приватность (RU-рынок, чувствительный код), автономность (uptime, блокировки), контроль (каждый токен виден).
+Злодей истории — API. «API дорогой, локально дешевле» — скучная аргументация.
+Для нас критичны три вещи: приватность (RU-рынок, чувствительный код),
+автономность (uptime, блокировки), контроль (каждый токен виден).
 -->
 
 ---
 hideInToc: true
 ---
 
-# Путь: от ноутбука до фермы
+# Путь: от 2 серверов до фермы
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-| Фаза | Железо | Модель | tok/s | Контекст | $/1M |
-|---|---|---|---:|---:|---:|
-| 0 | RTX 2060 Mobile (ноутбук) | Qwen3.5-7B Q4 | ~12 | 32K | — |
-| 1 | 1×RTX 3090 (б/у, ~$700) | Qwen3.6-27B Q4 | ~35 | 64K | ~$0.5 |
-| 2 | 2×RTX 3090 (TP=2) | Qwen3.8-27B-AWQ-MTP | ~75 | 256K | ~$0.3 |
-| 3 | 3×(2×3090) = 6 GPU | Qwen3.8-27B-AWQ-MTP | ~75×3 | 256K | ~$0.1 |
+| Этап | Что было | Честное «но» |
+|---|---|---|
+| Старт | 2 сервера (3090 + 4070), Xeon 3-го поколения | Китайские SSD «съели мозг»; ollama не потянул |
+| Рост | +2 сервера (1×3090) + 4070+4070 | Китайские платы (хуанан); ушли в **GPUStack** |
+| Хаос | Сервер 5×3090 + 4 сервера: 3090+3060 · 3090 · 4070+4070 · 3090+3090 | Разношёрстное железо, без порядка |
+| Порядок | pve4 с 4×3090 → 8×3090 под инференс + RAG-узел (2×4070 Ti + 4×3060) | Работает 24/7 |
 
-<div class="num-cap">Сейчас: 4×(2×RTX 3090) + 2×RTX 4070 Ti + 4×RTX 3060 — инференс на 8×3090, RAG/embedding/dev на 4070 Ti и 3060</div>
+<div class="hook-line">Начиналось с двух серверов и кучи компромиссов — китайские SSD, хуанан, ollama. До порядка дошёл только через GPUStack.</div>
 
 <!--
-Цифры — из моих замеров на конкретном железе, не из документации.
-Фаза 0: для чата нормально, для агента нет — 12 tok/s превращает 30-минутную задачу в полтора часа.
-Фаза 1: 256K не влезало, а агенту нужна полная история + код + tool calls.
-Фаза 2: один сервер — single point of failure, crash vLLM = остановленный агент.
-Фаза 3: потерять один узел перестало быть катастрофой.
+Реальный путь фермы — из истории закупки, не из документации.
+Старт: 2 сервера (3090 + 4070), Xeon 3-го поколения. Китайские SSD «съедали мозг» —
+первый настоящий конфликт. Эксперименты с ollama — не потянули нагрузку.
+Рост: докупил 2 сервера по 1×3090 + предыдущий 4070+4070. Китайские материнские платы (хуанан).
+Перешёл на GPUStack — появился auto-restart и monitoring.
+Хаос: сервер 5×3090, затем 4 сервера (3090+3060, 3090, 4070+4070, 3090+3090) —
+разношёрстное железо, без порядка.
+Порядок: pve4 с 4×3090 приведён в порядок → 8×3090 под инференс + RAG-узел (2×4070 Ti + 4×3060).
 -->
 
 ---
@@ -155,7 +215,7 @@ layout: section
 title: Что дают consumer GPU
 ---
 
-<SectionCard kicker="Раздел 2" title="Что дают consumer GPU" tone="violet" />
+<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -297,7 +357,7 @@ layout: section
 title: "Как это реально запускать: GPUStack + vLLM"
 ---
 
-<SectionCard kicker="Раздел 3" title="Как это реально запускать: GPUStack + vLLM" tone="orange" />
+<SectionCard kicker="Часть 2" title="Как запускать: GPUStack + vLLM" tone="orange" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -321,8 +381,8 @@ flowchart TB
 ```
 
 <!--
-Клиенты — код-агенты. Балансировщик — 400 строк Go (раздел 4).
-Каждая реплика — 2×3090, TP=2, MTP, конфиг из раздела 3.
+Клиенты — код-агенты. Балансировщик — 400 строк Go (часть 3).
+Каждая реплика — 2×3090, TP=2, MTP, конфиг из этой части.
 GPUStack управляет репликами и поднимает их после crash.
 RAG-узел — отдельное железо: 4070 Ti и 3060 под bge-m3, reranker и dev.
 -->
@@ -424,10 +484,10 @@ NVFP4 и TRT-LLM из 0.28.0 — фичи Hopper/Blackwell, на Ampere бесп
 
 ---
 layout: section
-title: Какие метрики важны
+title: Цена и мораль
 ---
 
-<SectionCard kicker="Раздел 4" title="Какие метрики важны и сколько чего надо" tone="pink" />
+<SectionCard kicker="Часть 3" title="Цена и мораль" tone="pink" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -530,15 +590,6 @@ hideInToc: true
 Это и есть «шоколад, который неприятно воняет»: каждый пункт — реальная ошибка с ценой.
 Подчеркнуть: мониторинг — самая дешёвая и самая забытая вещь в списке.
 -->
-
----
-layout: section
-title: Заключение
----
-
-<SectionCard kicker="Раздел 5" title="Заключение" tone="canvas" />
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
 hideInToc: true
