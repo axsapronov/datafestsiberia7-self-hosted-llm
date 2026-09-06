@@ -26,3 +26,21 @@ function hide(e: Event) {
     />
   </div>
 </template>
+
+<style scoped>
+/* Логотипы — вертикально, строчка за строчкой, по правому краю:
+   горизонтальный ряд не помещается (широкий вордмарк koronatech). */
+.cover-brand {
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.7rem;
+}
+.brand-logo {
+  height: 30px;
+  width: auto;
+}
+</style>
