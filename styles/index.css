@@ -401,6 +401,12 @@
 }
 
 /* ── Слайд 2: план + о докладчике ───────────────────────────────────── */
+/* Колонки two-cols: план (Toc) — 60%, карточка докладчика — 40%
+   (two-cols — grid grid-cols-2, переопределяем grid-template-columns) */
+.slidev-layout.two-columns {
+  grid-template-columns: 60% 40%;
+}
+
 /* План (Toc): нумерованный список — mono-номера, ink-титлы, hairline */
 .slidev-layout .slidev-toc-list {
   list-style: none;
@@ -415,15 +421,16 @@
   border-bottom: 1px solid var(--hairline);
 }
 .slidev-layout .slidev-toc-item:first-child {
-  padding-top: 0.15rem;
+  padding-top: 2rem;
 }
 .slidev-layout .slidev-toc-item:last-child {
   border-bottom: none;
+
 }
 .slidev-layout .slidev-toc-item > a {
   display: flex;
   align-items: baseline;
-  gap: 1rem;
+  gap: 0.5rem;
   font-size: 1.125rem; /* title-md */
   font-weight: 600;
   line-height: 1.4;
@@ -452,6 +459,7 @@
   gap: 0.35rem;
   background: var(--surface-card);
   border-radius: 12px;
+  margin-top: 2rem;
   padding: 2rem;
   margin-right: -1.5rem;
 }

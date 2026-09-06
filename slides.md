@@ -60,13 +60,13 @@ hideInToc: true
   <img class="speaker-photo" src="/img/headshot.png" alt="Александр Сапронов">
   <div class="speaker-name">Александр Сапронов</div>
   <div class="speaker-role">IT Manager (CTO)</div>
-  <div class="speaker-bio">Решаю бизнес задачи в IT. МТС, Avito, Welltory</div>
+  <div class="speaker-bio">Решаю бизнес задачи в IT. <br>МТС, Avito, Welltory</div>
   <div class="speaker-contacts"><a href="https://t.me/axsapronov">t.me/axsapronov</a> · <a href="mailto:a@sapronov.me">a@sapronov.me</a></div>
 </div>
 
 ---
 hideInToc: false
-title: Зачем собирать свою ИИ-инфраструктуру
+title: Зачем собирать свою ИИ-инфраструктуру?
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
@@ -156,9 +156,14 @@ layout: section
 title: Какую инфраструктуру собирать?
 ---
 
-<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
+<SectionCard kicker="" title="Какую инфраструктуру собирать?" tone="violet" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+
+
+
+
 
 
 
@@ -188,6 +193,16 @@ title: Текущее состояние — себестоимость
 ---
 
 <SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+
+---
+layout: section
+title: Выводы
+---
+
+<SectionCard kicker="Часть 3" title="Цена и мораль" tone="pink" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -261,15 +276,6 @@ hideInToc: true
 разношёрстное железо, без порядка.
 Порядок: pve4 с 4×3090 приведён в порядок → 8×3090 под инференс + RAG-узел (2×4070 Ti + 4×3060).
 -->
-
----
-layout: section
-title: Что дают consumer GPU
----
-
-<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
 hideInToc: true
@@ -405,15 +411,6 @@ hideInToc: true
 -->
 
 ---
-layout: section
-title: "Как это реально запускать: GPUStack + vLLM"
----
-
-<SectionCard kicker="Часть 2" title="Как запускать: GPUStack + vLLM" tone="orange" />
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
----
 hideInToc: true
 ---
 
@@ -533,15 +530,6 @@ vllm serve Qwen3.8-27B-AWQ-MTP \
 Полный финальный конфиг — 4 параметра тюнинга + дефолты, которые важно не трогать.
 NVFP4 и TRT-LLM из 0.28.0 — фичи Hopper/Blackwell, на Ampere бесполезны.
 -->
-
----
-layout: section
-title: Цена и мораль
----
-
-<SectionCard kicker="Часть 3" title="Цена и мораль" tone="pink" />
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
 hideInToc: true
