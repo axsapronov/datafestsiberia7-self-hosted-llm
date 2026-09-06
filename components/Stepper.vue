@@ -1,11 +1,18 @@
 <script lang="ts">
-export interface LaunchStep {
+export interface StepImage {
+  src: string
+  alt?: string
+}
+
+export interface Step {
   num: string
   title: string
   meta?: string
-  img?: string
-  imgAlt?: string
-  command?: string
+  /** Фото в теле карточки — одно или несколько (например, 2 сервера) */
+  imgs?: StepImage[]
+  /** Mono-подпись в теле карточки (команда, название инструмента) */
+  chip?: string
+  /** Крупная метрика в теле карточки */
   metric?: string
   unit?: string
   /** Векторная иллюстрация в теле карточки */
@@ -13,50 +20,12 @@ export interface LaunchStep {
   /** Тёмная «featured»-карточка — единственный тёмный surface на слайде */
   dark?: boolean
 }
-
-export const defaultSteps: LaunchStep[] = [
-  {
-    num: '01',
-    title: 'Видеокарта, которая есть',
-    meta: 'Tesla M40 · 24GB',
-    img: '/img/hardware/step-00.jpg',
-    imgAlt: 'Tesla M40 — видеокарта, которая уже была',
-  },
-  {
-    num: '02',
-    title: 'Скачиваем',
-    command: 'ollama pull',
-  },
-  {
-    num: '03',
-    title: 'Запускаем',
-    command: 'ollama serve',
-  },
-  {
-    num: '04',
-    title: 'Получаем',
-    metric: '10–20',
-    unit: 'ток/сек',
-  },
-  {
-    num: '05',
-    title: 'Начало пути',
-    meta: 'к 1 млрд токенов/сутки',
-    art: 'excited',
-    dark: true,
-  },
-]
 </script>
 
 <script setup lang="ts">
-const props = withDefaults(
-  defineProps<{
-    steps?: LaunchStep[]
-  }>(),
-  {
-    steps: () => defaultSteps,
-  },
-)
+const props = defineProps<{
+  steps: Step[]
+}>()
 </script>
 
 <template>
@@ -64,13 +33,21 @@ const props = withDefaults(
     <template v-for="(s, i) in props.steps" :key="s.num">
       <div class="fls-card" :class="{ 'fls-dark': s.dark }">
         <div class="fls-num">{{ s.num }}</div>
-        <div class="fls-body">
-          <img v-if="s.img" :src="s.img" :alt="s.imgAlt ?? s.title" class="fls-img" />
+        <div class="fls-body" :class="{ 'fls-body-multi': (s.imgs?.length ?? 0) > 1 }">
+          <template v-if="s.imgs?.length">
+            <img
+              v-for="(im, j) in s.imgs"
+              :key="j"
+              :src="im.src"
+              :alt="im.alt ?? s.title"
+              class="fls-img"
+            />
+          </template>
           <div v-else-if="s.metric" class="fls-metric">
             <span class="fls-metric-num">{{ s.metric }}</span>
             <span class="fls-metric-unit">{{ s.unit }}</span>
           </div>
-          <div v-else-if="s.command" class="fls-cmd">{{ s.command }}</div>
+          <div v-else-if="s.chip" class="fls-cmd">{{ s.chip }}</div>
           <svg
             v-else-if="s.art === 'excited'"
             class="fls-art"
@@ -139,7 +116,7 @@ const props = withDefaults(
   color: var(--muted);
 }
 
-/* Среда карточки: фото / метрика / команда — по центру, тянется */
+/* Среда карточки: фото / метрика / подпись — по центру, тянется */
 .fls-body {
   flex: 1;
   min-height: 0;
@@ -156,6 +133,11 @@ const props = withDefaults(
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid var(--hairline);
+}
+
+/* Несколько фото в одной карточке (2 сервера) — ниже, чтобы влезть в 280px */
+.fls-body-multi .fls-img {
+  height: 72px;
 }
 
 .fls-cmd {

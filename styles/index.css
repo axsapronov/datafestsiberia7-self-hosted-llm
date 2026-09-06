@@ -257,9 +257,9 @@
   text-align: center;
 }
 
-/* Слайд «Начало»: степпер из 5 шагов (FirstLaunchStepper) — прижат под
-   заголовок (как .data-chart и .hw-grid на соседних слайдах), чтобы верх
-   совпадал с ними; footer (hook-line) — общим правилом .hook-line */
+/* Слайды-степперы (Stepper): прижаты под заголовок (как .data-chart и
+   .hw-grid на соседних слайдах), чтобы верх совпадал с ними;
+   footer (hook-line) — общим правилом .hook-line */
 .slidev-layout.stepper-slide {
   display: flex;
   flex-direction: column;

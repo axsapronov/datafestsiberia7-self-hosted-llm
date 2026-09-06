@@ -55,14 +55,12 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
   s1: {
     name: 'M40 + Ollama',
     problems: [
-      { param: 'speed', actual: '10–20 tok/s', status: 'bad' },
-      // TODO(спикер): в заметках «Начало» — 16k, в карточке — 4096; уточнить реальное значение
+      { param: 'speed', actual: '10–20 ток/сек', status: 'bad' },
       { param: 'context', actual: '4096 (дефолт Ollama)', status: 'bad' },
       { param: 'volume', actual: '1 пользователь, всё очень долго', status: 'bad' },
-      // TODO(спикер): модель, которая влезла в 24GB
       { param: 'quality', actual: 'Непонятно', status: 'bad' },
       { param: 'api', actual: 'Ollama API (OpenAI-совместимый)', status: 'warn' },
-      { param: 'manage', actual: 'урезанная статистика и доступы', status: 'bad' },
+      { param: 'manage', actual: 'Урезанная статистика и доступы', status: 'bad' },
     ],
     features: [
       { title: 'Шум · Telsa M40', value: '250W', text: 'вентилятор на 100% под нагрузкой, NVIDIA уже не поддерживает' },
@@ -70,7 +68,7 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
       { title: 'Ограниченный доступ', value: '—', text: 'тяжело организовать доступ по ключам, без доступа через VPN' },
     ],
     ideas: [
-      { num: '01', title: 'Запустить серверы с RTX 3060/4070 Ti/3090', text: 'можно купить, есть драйверы', feature: 'шум' },
+      { num: '01', title: 'Запустить серверы с RTX 3060/4070 Ti', text: 'можно купить, есть драйверы', feature: 'шум' },
       { num: '02', title: 'Заменить ollama на llama.cpp', text: 'больше инструкций, больше опыта, меньше посредников', params: ['volume', 'speed'] },
       { num: '03', title: 'Настраиваем движок llama.cpp', text: 'читаем форумы, инструкции, увеличиваем контекст под задачу, до 100K', params: ['context'] },
       { num: '04', title: 'Объединить серверы в Proxmox кластер', text: 'централизованный контроль за RAM, VRAM, SSD ', feature: 'надёжность' },
@@ -83,32 +81,34 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
   s2: {
     name: '3060/4070 Ti + llama.cpp',
     problems: [
-      { param: 'speed', actual: 'TODO', status: 'bad' },
-      { param: 'context', actual: 'TODO', status: 'bad' },
-      { param: 'volume', actual: 'TODO', status: 'bad' },
-      { param: 'quality', actual: 'TODO', status: 'bad' },
-      { param: 'api', actual: 'TODO', status: 'bad' },
-      { param: 'manage', actual: 'TODO', status: 'bad' },
+      { param: 'speed', actual: '50-70 ток/сек', status: 'warn' },
+      { param: 'context', actual: '32-64k', status: 'bad' },
+      { param: 'volume', actual: '2-3 пользователя, но тормоза', status: 'bad' },
+      { param: 'quality', actual: 'Не ясно как подобрать модель', status: 'warn' },
+      { param: 'api', actual: 'OpenAI-совместимый', status: 'ok' },
+      { param: 'manage', actual: 'GPUStack', status: 'ok' },
     ],
     features: [
-      { title: 'TODO', value: 'хуанан', text: 'китайские материнские платы' },
-      { title: 'TODO', value: '—', text: 'электричество' },
-      { title: 'TODO', value: '—', text: 'первые пользователи' },
+      { title: 'Модели еле влезают', value: '', text: 'RAM помогает запихать модель' },
+      { title: '2-3 пользователя — предел', value: '', text: 'не хватает пропускной способности' },
+      { title: 'GPUStack — унификация', value: '', text: 'ключи, статистика, модели через UI' },
     ],
     ideas: [
-      { num: '01', title: 'TODO', text: 'докупить 3090' },
-      { num: '02', title: 'TODO', text: 'TP' },
-      { num: '03', title: 'TODO', text: 'переход на vLLM' },
+      { num: '01', title: 'Перейти на пары RTX 3090', text: 'Это даст 48 GB VRAM' },
+      { num: '02', title: 'Научиться запускать модели через vLLM', text: 'Движок адаптирован под production нагрузку' },
+      { num: '03', title: 'Подобрать версию модели под железо', text: 'Изучить виды квантизации, особенности алгоритмов' },
+      { num: '04', title: 'Настроить контроль температура-мощность', text: 'Написать демона, который сам будет следить за перегревом' },
+      { num: '05', title: 'Свой балансировщик', text: 'sticky session + prefix-aware', params: ['speed', 'volume'] },
     ],
   },
   s3: {
     name: '8×3090 + vLLM + GPUStack',
     problems: [
-      { param: 'speed', actual: '75 tok/s на пользователя (210 aggregate)', status: 'warn' },
+      { param: 'speed', actual: '80-100 ток/сек на пользователя', status: 'ok' },
       { param: 'context', actual: '256K (262144)', status: 'ok' },
-      { param: 'volume', actual: '1 млрд токенов/сутки (пик), 300–500M в среднем', status: 'ok' },
-      { param: 'quality', actual: 'Qwen3.8: Terminal-Bench 73, DeepSWE 42.2', status: 'warn' },
-      { param: 'api', actual: 'vLLM — OpenAI-совместимый', status: 'ok' },
+      { param: 'volume', actual: '1 млрд токенов/сутки (пик), 600-750M в среднем', status: 'ok' },
+      { param: 'quality', actual: 'Qwen3.8: Terminal-Bench 73, DeepSWE 42.2', status: 'ok' },
+      { param: 'api', actual: 'GPUStack — OpenAI-совместимый', status: 'ok' },
       { param: 'manage', actual: 'GPUStack: счётчики по пользователям и API-ключам', status: 'ok' },
     ],
     features: [
@@ -121,7 +121,7 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
       { num: '02', title: '256K контекст', text: '--max-model-len 262144, KV-cache ~18GB', params: ['context'] },
       { num: '03', title: 'OMP_NUM_THREADS=1, без async scheduling', text: 'TTFT 4.2s → 1.8s', params: ['speed'] },
       { num: '04', title: 'vLLM 0.28.0', text: 'фикс MTP crash — стабильность 24/7', feature: 'особенность · надёжность' },
-      { num: '05', title: 'свой балансировщик (Go, 400 строк)', text: 'least-loaded + prefix-aware: P99 8.7s → 3.2s', params: ['speed', 'volume'] },
+
       { num: '06', title: 'мониторинг с первого дня', text: 'Prometheus + Grafana + GPUStack: алерты, а не логи', params: ['manage'] },
     ],
   },
