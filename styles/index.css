@@ -42,13 +42,19 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Боковой градиент: заметный accent-blue tint по левому краю светлых слайдов */
-  --slide-side-glow: linear-gradient(
-    to right,
-    rgba(59, 130, 246, 0.15) 0%,
-    rgba(59, 130, 246, 0.08) 20%,
-    transparent 45%
-  );
+  /* Stripe-style top mesh: мягкий многоцветный градиент (blue → violet → pink + teal),
+     перетекает в холст к середине слайда. Цвета — из токенов (accent + badge pastels). */
+  --slide-top-mesh:
+    radial-gradient(ellipse 100% 65% at 0% -10%, rgba(59, 130, 246, 0.30) 0%, transparent 58%),
+    radial-gradient(ellipse 90% 60% at 48% -18%, rgba(139, 92, 246, 0.24) 0%, transparent 54%),
+    radial-gradient(ellipse 85% 55% at 100% -5%, rgba(236, 72, 153, 0.20) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 40% at 18% 8%, rgba(20, 184, 166, 0.16) 0%, transparent 45%);
+
+  /* Тёмная версия для закрывающего слайда: приглушённые glow-пятна в углах */
+  --slide-dark-mesh:
+    radial-gradient(ellipse 70% 55% at 12% -5%, rgba(99, 102, 241, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 88% 105%, rgba(236, 72, 153, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 45% at 50% 112%, rgba(59, 130, 246, 0.12) 0%, transparent 48%);
 
   /* Slidev theme vars — подстраиваем встроенные компоненты под систему */
   --slidev-theme-primary: #111111;
@@ -57,10 +63,10 @@
   --slidev-code-radius: 8px;
 }
 
-/* Холст слайда: белый фон + небольшой боковой градиент слева
-   (лёгкий accent tint — единственная цветовая нота на холсте) */
+/* Холст слайда: белый фон + Stripe-style top-mesh (многоцветный градиент сверху,
+   перетекающий в холст к середине) */
 .slidev-layout {
-  background: var(--slide-side-glow), var(--canvas);
+  background: var(--slide-top-mesh), var(--canvas);
   color: var(--body);
   font-family: var(--font-sans);
   font-size: 1rem;
@@ -73,34 +79,34 @@
 .slidev-layout.center,
 .slidev-layout.full,
 .slidev-layout.statement {
-  background: var(--slide-side-glow), var(--canvas);
+  background: var(--slide-top-mesh), var(--canvas);
 }
 
 /* Display-типографика: Inter 600 + negative letter-spacing (замена Cal Sans) */
 .slidev-layout h1 {
   font-family: var(--font-sans);
   font-size: 2.25rem; /* display-md · 36px */
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.15;
   letter-spacing: -0.028em;
   color: var(--ink);
 }
 .slidev-layout h2 {
   font-size: 1.75rem; /* display-sm · 28px */
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.018em;
   color: var(--ink);
 }
 .slidev-layout h3 {
   font-size: 1.125rem; /* title-md · 18px */
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.4;
   color: var(--ink);
 }
 .slidev-layout h4 {
   font-size: 1rem; /* title-sm · 16px */
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.4;
   color: var(--ink);
 }
@@ -125,7 +131,7 @@
 }
 .slidev-layout th {
   text-align: left;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink);
   padding: 0.55rem 0.9rem;
   border-bottom: 2px solid var(--ink);
@@ -188,7 +194,7 @@
 .hook-line {
   margin-top: 1.6rem;
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.35;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -225,7 +231,11 @@
   line-height: 1.05;
   letter-spacing: -0.031em;
   color: var(--ink);
-  padding-bottom: 4rem;
+  padding-bottom: 9rem;
+}
+.slidev-layout .title .title-sub {
+  font-size: 2.25rem;
+  color: var(--ink);
 }
 .cover-meta {
   position: absolute;
@@ -236,7 +246,7 @@
 }
 .cover-author {
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink);
 }
 .cover-contacts,
@@ -250,6 +260,122 @@
   text-decoration: none;
 }
 
+/* Пруф на обложке: график суточного объёма токенов из Grafana — низ-справа */
+.cover-proof {
+  position: absolute;
+  right: 2.5rem;
+  bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+}
+.cover-proof-cap {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-soft);
+}
+.cover-proof-chart {
+  display: block;
+  width: 380px;
+  height: auto;
+}
+
+/* ── Слайд 2: план + о докладчике ───────────────────────────────────── */
+/* План (Toc): нумерованный список — mono-номера, ink-титлы, hairline */
+.slidev-layout .slidev-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: toc;
+}
+.slidev-layout .slidev-toc-item {
+  counter-increment: toc;
+  padding: 0.85rem 0;
+  margin-left: 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.slidev-layout .slidev-toc-item:first-child {
+  padding-top: 0.15rem;
+}
+.slidev-layout .slidev-toc-item:last-child {
+  border-bottom: none;
+}
+.slidev-layout .slidev-toc-item > a {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  font-size: 1.125rem; /* title-md */
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.slidev-layout .slidev-toc-item > a::before {
+  content: counter(toc, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.slidev-layout .slidev-toc-item > a p {
+  margin: 0;
+}
+.slidev-layout .slidev-toc-item-active > a::before {
+  color: var(--accent);
+}
+
+/* Карточка докладчика: surface-card, круглое фото, mono-контакты */
+.speaker-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  background: var(--surface-card);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-right: -1.5rem;
+}
+.speaker-photo {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+}
+.speaker-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.speaker-role {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.speaker-bio {
+  margin-top: 0.9rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--body);
+}
+.speaker-contacts {
+  margin-top: 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--muted-soft);
+}
+.speaker-contacts a {
+  color: var(--muted-soft);
+}
+
 /* ── Финальный тёмный слайд (thanks) ─────────────────────────────────── */
 .slidev-layout .thanks {
   display: flex;
@@ -260,14 +386,14 @@
 }
 .slidev-layout.center-dark .thanks-title {
   font-size: 4rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.05;
   letter-spacing: -0.031em;
   color: var(--on-dark);
 }
 .slidev-layout .thanks-sub {
   font-size: 1.75rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.018em;
   color: var(--on-dark-soft);
 }
@@ -279,7 +405,7 @@
 }
 .slidev-layout .thanks-name {
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--on-dark);
 }
 .slidev-layout .thanks-links {

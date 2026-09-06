@@ -8,11 +8,9 @@ info: |
   Новосибирск, 10 октября 2026
 hideInToc: true
 colorSchema: light
-mdc: true
 drawings:
   persist: false
 transition: slide-left
-comark: true
 duration: 30min
 fonts:
   sans: Inter
@@ -23,11 +21,9 @@ fonts:
 
 <div class="title">
 
-# 1 млрд токенов в сутки на потребительских видеокартах
+# 1 млрд токенов <span class="title-sub">в сутки</span><br>на потребительских видеокартах
 
 </div>
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 <CoverBrand />
 
@@ -37,19 +33,36 @@ fonts:
   <div class="cover-date">Data Fest Siberia 7 · Новосибирск · 10 октября 2026</div>
 </div>
 
+<div class="cover-proof">
+  <img class="cover-proof-chart" src="/img/tokens-chart.svg" alt="Total tokens per day — пик 2026-09-01, 1 043 495 767 токенов">
+</div>
+
 <!--
 Приветствие, представление, 1-2 минуты.
 -->
 
 ---
+layout: two-cols
 hideInToc: true
 ---
 
 # План доклада
 
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+::left::
+
 <Toc minDepth="1" maxDepth="1" />
 
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+::right::
+
+<div class="speaker-card">
+  <img class="speaker-photo" src="/img/headshot.png" alt="Александр Сапронов">
+  <div class="speaker-name">Александр Сапронов</div>
+  <div class="speaker-role">IT Manager (CTO)</div>
+  <div class="speaker-bio">Решаю бизнес задачи в IT. МТС, Avito, Welltory</div>
+  <div class="speaker-contacts"><a href="https://t.me/axsapronov">t.me/axsapronov</a> · <a href="mailto:a@sapronov.me">a@sapronov.me</a></div>
+</div>
 
 ---
 layout: section
