@@ -11,3 +11,4 @@ components.d.ts
 # slidev export artifacts (контент public/ не затрагивается)
 *-export.pdf
 *-export.pptx
+.kilo/plans
