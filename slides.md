@@ -198,12 +198,26 @@ API: OpenAI/Anthropic-совместимый — код-агенты (pi.dev, Cu
 tool use на уровне Claude Code, и стабильные (не «иногда 30, иногда 5») 80+ tok/s.
 -->
 
+
 ---
-title: Начало — запуск первой модели, ollama
+title: Как запустить LLM модель?
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Как запустить LLM модель?
+
+- TODO
+- Inference движки, ollama, llama.cpp, vllm, sglang, etc
+
+
+---
+title: Начинаем — запуск первой модели, ollama
 class: stepper-slide
 ---
 
-# Начало — запуск первой модели, ollama
+# Начинаем — запуск первой модели, ollama
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -229,13 +243,13 @@ class: stepper-slide
 -->
 
 ---
-title: Итоги — шумит, тормозит, тупит
+title: Итого — шумит, тормозит, тупит
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Итоги — шумит, тормозит, тупит
+# Итого — шумит, тормозит, тупит
 
 <StageProblems stage="s1" />
 
@@ -256,13 +270,13 @@ TODO(спикер): контекст — 4096 (дефолт) или 16k (из з
 
 
 ---
-title: Идеи улучшений — больше видеокарт и llama.cpp
+title: Что дальше? Больше видеокарт и llama.cpp
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Идеи улучшений — больше видеокарт и llama.cpp
+# Что дальше? Больше видеокарт и llama.cpp
 
 <StageIdeas stage="s1" />
 
@@ -282,28 +296,42 @@ hideInToc: true
 -->
 
 
+
 ---
-title: Какой движок inference взять?
+title: GPUStack — панель управления self-hosted
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Какой движок inference взять?
+# GPUStack — панель управления self-hosted
 
 - TODO
-
-
+- Перечень возможностей (ai gateway)
+- Скриншоты
 
 
 ---
-title: Продолжение — Proxmox, GPUStack, llama.cpp
+title: Что настраивать в движке inference?
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Что настраивать в движке inference?
+
+- TODO
+- Обобщенный алгорим
+
+
+---
+title: Продолжаем — Proxmox, GPUStack, llama.cpp
 class: stepper-slide
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Продолжение — Proxmox, GPUStack, llama.cpp
+# Продолжаем — Proxmox, GPUStack, llama.cpp
 
 <Stepper
   :steps="[
@@ -328,14 +356,15 @@ llama.cpp — рантайм: контекст под задачу, модель
 
 
 
+
 ---
-title: Итоги — 3060/4070 Ti + llama.cpp
+title: Итого — для 1 отдела хватит
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Итоги — 3060/4070 Ti + llama.cpp
+# Итого — для 1 отдела хватит
 
 <StageProblems stage="s2" />
 
@@ -348,13 +377,13 @@ TODO(спикер): данные S2 (3060/4070 Ti + llama.cpp) не собран
 -->
 
 ---
-title: Идеи — 3090 + vllm
+title: Что дальше? RTX 3090 + vLLM
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Идеи — 3090 + vllm
+# Что дальше? RTX 3090 + vLLM
 
 <StageIdeas stage="s2" />
 
@@ -364,6 +393,40 @@ hideInToc: true
 TODO(спикер): идеи S2 не собраны. Кандидаты: докупить 3090, TP, переход на vLLM.
 Заполнить до финального экспорта.
 -->
+
+
+---
+title: Подбор модели под железо
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Подбор модели под железо
+
+- TODO
+- Квантование
+- https://github.com/intel/auto-round
+- Архитектура поколений видеокарт
+
+
+
+
+---
+title: Балансировка LLM трафика
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Балансировка LLM трафика
+
+- TODO
+- Учет загруженности видеокарты
+- Учет температуры видеокарты
+- Учет прогретости кэша
+
+
 
 
 ---
@@ -384,37 +447,6 @@ title: Стабилизация — агенты, балансер, vllm
   ]"
 />
 
-
-
----
-title: Подбор модели под железо
-hideInToc: true
----
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
-# Подбор модели под железо
-
-- TODO
-- Квантование
-- https://github.com/intel/auto-round
-- Архитектура поколений видеокарт
-
-
-
----
-title: Балансировка LLM трафика
-hideInToc: true
----
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
-# Балансировка LLM трафика
-
-- TODO
-- Учет загруженности видеокарты
-- Учет температуры видеокарты
-- Учет прогретости кэша
 
 
 ---
@@ -446,8 +478,6 @@ TODO(спикер): подтвердить черновик (75 tok/s, 1 млр�
 
 ---
 
----
-
 # Заключение
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
@@ -456,8 +486,7 @@ TODO(спикер): подтвердить черновик (75 tok/s, 1 млр�
 
 
 
-
-<div class="hook-line">Это не конец, а checkpoint. Через 6 месяцев я это перепишу.</div>
+<div class="hook-line">Это не конец, а checkpoint.</div>
 
 <!--
 Финал: 24/7, без лимитов, без счетов, без зависимости от чужого uptime — и это стоит $3,200/год,

@@ -98,7 +98,8 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
       { num: '02', title: 'Научиться запускать модели через vLLM', text: 'Движок адаптирован под production нагрузку' },
       { num: '03', title: 'Подобрать версию модели под железо', text: 'Изучить виды квантизации, особенности алгоритмов' },
       { num: '04', title: 'Настроить контроль температура-мощность', text: 'Написать демона, который сам будет следить за перегревом' },
-      { num: '05', title: 'Свой балансировщик', text: 'sticky session + prefix-aware', params: ['speed', 'volume'] },
+      { num: '05', title: 'Написать свой балансировщик', text: 'sticky session + prefix-aware', },
+      { num: '06', title: 'Встроить ИИ в рабочий процесс', text: 'CI/CD, SDLC, RAG',},
     ],
   },
   s3: {
