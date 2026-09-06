@@ -42,12 +42,12 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Боковой градиент: мягкий монохромный fade по левому краю светлых слайдов */
+  /* Боковой градиент: заметный accent-blue tint по левому краю светлых слайдов */
   --slide-side-glow: linear-gradient(
     to right,
-    rgba(17, 17, 17, 0.045) 0%,
-    rgba(17, 17, 17, 0.02) 18%,
-    transparent 42%
+    rgba(59, 130, 246, 0.15) 0%,
+    rgba(59, 130, 246, 0.08) 20%,
+    transparent 45%
   );
 
   /* Slidev theme vars — подстраиваем встроенные компоненты под систему */
@@ -58,7 +58,7 @@
 }
 
 /* Холст слайда: белый фон + небольшой боковой градиент слева
-   (мягкий monochrome-акцент, не ломает систему DESIGN.md) */
+   (лёгкий accent tint — единственная цветовая нота на холсте) */
 .slidev-layout {
   background: var(--slide-side-glow), var(--canvas);
   color: var(--body);
@@ -225,6 +225,7 @@
   line-height: 1.05;
   letter-spacing: -0.031em;
   color: var(--ink);
+  padding-bottom: 4rem;
 }
 .cover-meta {
   position: absolute;
