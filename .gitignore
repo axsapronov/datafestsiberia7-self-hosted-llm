@@ -8,3 +8,6 @@ components.d.ts
 .env
 .env.*
 *.log
+# slidev export artifacts (контент public/ не затрагивается)
+*-export.pdf
+*-export.pptx
