@@ -40,7 +40,7 @@ function hide(e: Event) {
   gap: 0.7rem;
 }
 .brand-logo {
-  height: 30px;
+  height: 16px;
   width: auto;
 }
 </style>

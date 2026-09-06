@@ -26,7 +26,7 @@ fonts:
 
 </div>
 
-<div class="subtitle">Как запускать и обслуживать LLM-модели локально</div>
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 <CoverBrand />
 
@@ -37,7 +37,7 @@ fonts:
 </div>
 
 <style>
-.title-hero h1 { font-size: 3.6rem; line-height: 1.02; color: var(--ink); }
+.title-hero h1 { font-size: 4.0rem; line-height: 1.02; color: var(--ink); }
 .subtitle { margin-top: 1.4rem; font-size: 1.4rem; color: var(--ink-dim); }
 .cover-meta { position: absolute; bottom: 2.5rem; left: 2.5rem; display: flex; flex-direction: column; gap: 0.3rem; }
 .cover-author { font-size: 1.3rem; font-weight: 600; color: var(--ink); }
@@ -59,18 +59,24 @@ hideInToc: true
 
 <Toc minDepth="1" maxDepth="1" />
 
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
 ---
 layout: center
-title: 1. Почему self-hosted LLM
+title: Почему self-hosted LLM
 ---
 
 <SectionCard kicker="Раздел 1" title="Почему self-hosted LLM" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
 hideInToc: true
 ---
 
 # Момент, когда API стал болью
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 <v-clicks>
 - Март 2026: счёт за Claude API — **$4,200 в месяц**
@@ -94,6 +100,8 @@ hideInToc: true
 ---
 
 # Почему не API
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ::left::
 
@@ -128,6 +136,8 @@ hideInToc: true
 
 # Путь: от ноутбука до фермы
 
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
 | Фаза | Железо | Модель | tok/s | Контекст | $/1M |
 |---|---|---|---:|---:|---:|
 | 0 | RTX 2060 Mobile (ноутбук) | Qwen3.5-7B Q4 | ~12 | 32K | — |
@@ -151,16 +161,20 @@ hideInToc: true
 
 ---
 layout: center
-title: 2. Что дают consumer GPU
+title: Что дают consumer GPU
 ---
 
 <SectionCard kicker="Раздел 2" title="Что дают consumer GPU" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
 hideInToc: true
 ---
 
 # Qwen — это не Claude
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ::left::
 
@@ -197,6 +211,8 @@ hideInToc: true
 
 # 12 моделей, 1 победитель
 
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
 Протестировал на 2×3090: **8 — мусор** для агентного кодинга, 3 — нормальные, 1 — та, что у меня каждый день.
 
 <v-clicks>
@@ -217,6 +233,8 @@ hideInToc: true
 ---
 
 # Бенчмарки: 2×RTX 3090, vLLM, AWQ
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 | Модель | tok/s | TTFT (8K) | Terminal-Bench | DeepSWE |
 |---|---:|---:|---:|---:|
@@ -243,6 +261,8 @@ hideInToc: true
 ---
 
 # MTP: ×2.5–2.7 на 3090
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ::left::
 
@@ -276,6 +296,8 @@ hideInToc: true
 
 # 3090: что НЕ работает (честно)
 
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
 <v-clicks>
 - **Нет нативного FP8** — Ampere, не Ada и не Hopper. Поэтому квантую в AWQ (INT4), а не FP8
 - **NVLink-мосты не используются** — TP=2 работает по PCIe 4.0; для 27B этого достаточно (замерено)
@@ -295,16 +317,20 @@ hideInToc: true
 
 ---
 layout: center
-title: "3. Как это реально запускать: GPUStack + vLLM"
+title: "Как это реально запускать: GPUStack + vLLM"
 ---
 
 <SectionCard kicker="Раздел 3" title="Как это реально запускать: GPUStack + vLLM" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
 hideInToc: true
 ---
 
 # Финальная архитектура
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ```mermaid
 flowchart TB
@@ -329,6 +355,8 @@ hideInToc: true
 ---
 
 # Первый запуск: 18 tok/s
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ::left::
 
@@ -363,6 +391,8 @@ hideInToc: true
 
 # Тюнинг: 4 итерации, по одной переменной
 
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
 | Итерация | Что изменил | Результат |
 |---|---|---|
 | 1 | MTP: 3 спекулятивных токена | 18 → 45 tok/s (×2.5) |
@@ -386,6 +416,8 @@ hideInToc: true
 ---
 
 # Финальный конфиг
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ::left::
 
@@ -423,16 +455,20 @@ NVFP4 и TRT-LLM из 0.28.0 — фичи Hopper/Blackwell, на Ampere бесп
 
 ---
 layout: center
-title: 4. Какие метрики важны
+title: Какие метрики важны
 ---
 
 <SectionCard kicker="Раздел 4" title="Какие метрики важны и сколько чего надо" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
 hideInToc: true
 ---
 
 # NGINX не понимает LLM
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ::left::
 
@@ -466,6 +502,8 @@ hideInToc: true
 
 # Бенчмарк: NGINX vs мой балансировщик
 
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
 | Метрика | NGINX RR | Мой балансировщик |
 |---|---:|---:|
 | P50 latency | 2.1s | **1.4s** |
@@ -490,6 +528,8 @@ hideInToc: true
 ---
 
 # Тономика: $3,200/год против $20–73K
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 | Параметр | Значение |
 |---|---:|
@@ -519,6 +559,8 @@ hideInToc: true
 
 # Что я бы сделал по-другому
 
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
 <v-clicks>
 1. **Железо:** 4×3090 (TP=4) вместо 3×(2×3090) — один узел проще. Но 1.4kW: блок питания не потянул
 2. **Модель:** 3 кандидата вместо 12 — Qwen3.8, DeepSeek-V3.2, GLM-4.6; 3 дня до решения
@@ -534,16 +576,20 @@ hideInToc: true
 
 ---
 layout: center
-title: 5. Заключение
+title: Заключение
 ---
 
 <SectionCard kicker="Раздел 5" title="Заключение" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
 hideInToc: true
 ---
 
 # Заключение
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 <v-clicks>
 - **1 млрд токенов в сутки — это не про железо.** Это про то, что я перестал быть пользователем API и стал оператором инфраструктуры
@@ -578,6 +624,8 @@ hideInToc: true
 
   <QrCode url="https://github.com/axsapronov/datafestsiberia7-self-hosted-llm" :size="124" caption="Ссылка на слайды" />
 </div>
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 <style>
 .thanks { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; text-align: center; }

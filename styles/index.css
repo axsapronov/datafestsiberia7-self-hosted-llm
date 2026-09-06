@@ -83,3 +83,14 @@
 .slidev-layout a:hover {
   border-bottom-color: var(--sapphire);
 }
+
+/* Номер слайда: низ-справа, моно, приглушённый */
+.slidev-slide-number {
+  position: absolute;
+  bottom: 0.9rem;
+  right: 1.2rem;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-dim);
+}
