@@ -65,7 +65,8 @@ hideInToc: true
 </div>
 
 ---
-hideInToc: true
+hideInToc: false
+title: Зачем собирать свою ИИ-инфраструктуру
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
@@ -151,6 +152,48 @@ Cloud - чтобы быстро двигаться, Self-hosted - чтобы д�
 -->
 
 ---
+layout: section
+title: Какую инфраструктуру собирать?
+---
+
+<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+
+
+---
+layout: section
+title: Начало — запуск первой модели
+---
+
+<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+
+---
+layout: section
+title: Продолжение — пользователи и электричество
+---
+
+<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+
+---
+layout: section
+title: Текущее состояние — себестоимость
+---
+
+<SectionCard kicker="Часть 1" title="Что дают consumer GPU" tone="violet" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+
+
+---
 hideInToc: true
 ---
 
@@ -190,12 +233,21 @@ hideInToc: true
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-| Этап | Что было | Честное «но» |
-|---|---|---|
-| Старт | 2 сервера (3090 + 4070), Xeon 3-го поколения | Китайские SSD «съели мозг»; ollama не потянул |
-| Рост | +2 сервера (1×3090) + 4070+4070 | Китайские платы (хуанан); ушли в **GPUStack** |
-| Хаос | Сервер 5×3090 + 4 сервера: 3090+3060 · 3090 · 4070+4070 · 3090+3090 | Разношёрстное железо, без порядка |
-| Порядок | pve4 с 4×3090 → 8×3090 под инференс + RAG-узел (2×4070 Ti + 4×3060) | Работает 24/7 |
+<div class="hw-grid">
+  <div class="hw-cell"><img src="/img/hardware/step-00.jpg" alt="№0. Вроде 24GB, но очень шумные, но очень медленные. Нет tensor ядер. Много геморроя, так как уже не поддерживаются NVidia"></div>
+  <div class="hw-cell"><img src="/img/hardware/step-01.jpg" alt="№1. Два сервера по 3060+4070Ti+Xeon 3 поколения"></div>
+  <div class="hw-cell"><img src="/img/hardware/step-02.jpg" alt="№2 Удалось закупиться и появился 2 сервера , по 1x3090, и предыдущий 4070+4070.Тогда использали китайские материнские платы (хуанан). Пошли в gpustack"></div>
+  <div class="hw-cell"><img src="/img/hardware/step-03.jpg" alt="№3"></div>
+  <div class="hw-cell"><img src="/img/hardware/step-04.jpg" alt="Эксперимент с 5x3090 на сервере"></div>
+  <div class="hw-cell"><img src="/img/hardware/step-05.jpg" alt="Наведение порядка"></div>
+  <div class="hw-cell"><img src="/img/hardware/step-06.jpg" alt="Наведение порядка"></div>
+  <div class="hw-cell"><img src="/img/hardware/step-07.jpg" alt="Наведение порядка"></div>
+  <div class="hw-cell hw-cell-label">
+    <div class="big">8×3090</div>
+    <div class="small">+ RAG-узел</div>
+    <div class="small">2×4070 Ti · 4×3060</div>
+  </div>
+</div>
 
 <div class="hook-line">Начиналось с двух серверов и кучи компромиссов — китайские SSD, хуанан, ollama. До порядка дошёл только через GPUStack.</div>
 
@@ -322,7 +374,7 @@ MTP:       [T1 T2 T3] → verify    1 шаг
 
 <v-clicks>
 - Модель предсказывает **3 токена сразу**, а не 1; если «верификатор» соглашается — 3 токена за стоимость 1
-- На коротких промптах: **30 → 100 tok/s (×2.5)**; на длинных генерациях — до **×2.7**
+- На коротких промптах: **18 → 45 tok/s (×2.5)**; на длинных генерациях — до **×2.7**
 - Это не магия, а архитектура Qwen. На H100 выигрыш меньше, на «узком» consumer-железе — **решающий**
 </v-clicks>
 

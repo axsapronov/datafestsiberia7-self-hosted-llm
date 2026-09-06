@@ -275,6 +275,50 @@
   height: 320px;
 }
 
+/* Стена фото фермы (слайд «Путь»): сетка 4×3. Фото — заглушки, спикер
+   расставит по этапам позже; 12-я ячейка — финальное состояние фермы. */
+.hw-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+.hw-cell {
+  aspect-ratio: 3 / 2;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  background: var(--surface-card);
+}
+.hw-cell img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hw-cell-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  background: var(--surface-dark);
+  color: var(--on-dark);
+  font-family: var(--font-mono);
+  text-align: center;
+  padding: 0.5rem;
+}
+.hw-cell-label .big {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.hw-cell-label .small {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--on-dark-soft);
+}
+
 /* Тёмная закрывающая плитка (аналог footer): фон — в layout center-dark */
 .slidev-layout.center-dark a {
   color: var(--on-dark-soft);
