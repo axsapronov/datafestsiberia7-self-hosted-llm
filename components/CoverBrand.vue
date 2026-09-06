@@ -3,10 +3,10 @@
 // Если файла нет, картинка 404-ит и скрывает себя — блок не падает
 // на отсутствующих ассетах, обложка деградирует до чистой текстовой.
 // Имена файлов — по факту в public/img/; при замене ассетов поправить здесь.
+  // { src: '/img/df7-logo.png', alt: 'Data Fest Siberia 7' },
 const logos = [
-  { src: '/img/df7-logo.png', alt: 'Data Fest Siberia 7' },
   { src: '/img/ods-logo.svg', alt: 'Open Data Science' },
-  { src: '/img/koronatech-logo.svg', alt: 'koronatech' },
+  // { src: '/img/koronatech-logo.svg', alt: 'koronatech' },
 ]
 
 function hide(e: Event) {
@@ -40,7 +40,7 @@ function hide(e: Event) {
   gap: 0.7rem;
 }
 .brand-logo {
-  height: 16px;
+  height: 24px;
   width: auto;
 }
 </style>

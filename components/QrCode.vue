@@ -17,10 +17,10 @@ const qrDataUrl = computed(() => {
 </script>
 
 <template>
-  <div class="qr">
+  <a :href="url" target="_blank" rel="noopener noreferrer" class="qr">
     <img :src="qrDataUrl" :width="size" :height="size" class="qr-img" />
     <div v-if="caption" class="qr-caption">{{ caption }}</div>
-  </div>
+  </a>
 </template>
 
 <style scoped>
@@ -29,13 +29,19 @@ const qrDataUrl = computed(() => {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
+  cursor: pointer;
 }
 .qr-img {
   border-radius: 8px;
+  transition: box-shadow 0.2s ease;
+}
+.qr:hover .qr-img {
+  box-shadow: 0 0 0 2px var(--accent);
 }
 .qr-caption {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
-  color: var(--ink-dim);
+  color: var(--muted-soft);
 }
 </style>

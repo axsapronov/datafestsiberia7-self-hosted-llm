@@ -13,10 +13,10 @@ pdf:
 	pnpm run export
 
 pptx:
-	pnpm run export --formats pptx
+	pnpm run export --format pptx
 
 check:
 	pnpm run format
 
 clean:
-	rm -rf dist *.pdf *.pptx
+	rm -rf dist *.pdf *.pptx slides-export.pptx

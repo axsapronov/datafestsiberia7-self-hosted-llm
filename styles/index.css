@@ -1,96 +1,292 @@
 /* ── Self-hosted LLM · Data Fest Siberia 7 ─────────────────────────────────
-   Светлый редакционный стиль, один акцент — sapphire.
-   Токены дизайна: всё ниже читает эти переменные.                          */
+   Дизайн-система по DESIGN.md: белый холст, near-black primary,
+   Inter display 600 (замена Cal Sans) + Inter body, JetBrains Mono,
+   light-gray карточки, тёмная закрывающая слайд-плитка.                  */
 
 :root {
-  --sapphire: #0f62fe; /* акцент */
-  --ink: #1f2430;      /* основной текст */
-  --ink-dim: #5a6472;  /* вторичный текст */
-  --surface: #ffffff;  /* фон карточек */
-  --border: #e3e7ee;   /* рамки */
-  --bg: #f8f9fb;       /* холст слайда (лёгкий off-white, чтобы белые карточки читались) */
+  /* Surface */
+  --canvas: #ffffff;
+  --surface-soft: #f8f9fa;
+  --surface-card: #f5f5f5;
+  --surface-strong: #e5e7eb;
+  --surface-dark: #101010;
+  --surface-dark-elevated: #1a1a1a;
+  --hairline: #e5e7eb;
+  --hairline-soft: #f3f4f6;
+
+  /* Text */
+  --ink: #111111;
+  --body: #374151;
+  --muted: #6b7280;
+  --muted-soft: #898989;
+  --on-dark: #ffffff;
+  --on-dark-soft: #a1a1aa;
+
+  /* Brand */
+  --primary: #111111;
+  --primary-active: #242424;
+  --accent: #3b82f6;
+
+  /* Badge pastels */
+  --badge-orange: #fb923c;
+  --badge-pink: #ec4899;
+  --badge-violet: #8b5cf6;
+  --badge-emerald: #34d399;
+
+  /* Semantic */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+
+  /* Fonts */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Боковой градиент: мягкий монохромный fade по левому краю светлых слайдов */
+  --slide-side-glow: linear-gradient(
+    to right,
+    rgba(17, 17, 17, 0.045) 0%,
+    rgba(17, 17, 17, 0.02) 18%,
+    transparent 42%
+  );
+
+  /* Slidev theme vars — подстраиваем встроенные компоненты под систему */
+  --slidev-theme-primary: #111111;
+  --slidev-code-background: #f5f5f5;
+  --slidev-code-foreground: #1b1b1b;
+  --slidev-code-radius: 8px;
 }
 
-/* Холст слайда */
+/* Холст слайда: белый фон + небольшой боковой градиент слева
+   (мягкий monochrome-акцент, не ломает систему DESIGN.md) */
 .slidev-layout {
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--slide-side-glow), var(--canvas);
+  color: var(--body);
+  font-family: var(--font-sans);
+  font-size: 1rem;
   line-height: 1.5;
-  --slidev-code-font-size: 0.85em;
 }
 
-/* Обложка, секции и центрированные слайды получают тот же холст */
+/* Обложка и центрированные слайды — тот же холст
+   (секции и dark-закрывалка задают фон в своих layout-ах) */
 .slidev-layout.cover,
-.slidev-layout.section,
 .slidev-layout.center,
 .slidev-layout.full,
 .slidev-layout.statement {
-  background: var(--bg);
+  background: var(--slide-side-glow), var(--canvas);
 }
 
-/* Серифный дисплей для крупных заголовков (H1/H2); остальное — sans */
-.slidev-layout h1,
-.slidev-layout h2 {
-  font-family: 'Source Serif 4', Georgia, serif;
+/* Display-типографика: Inter 600 + negative letter-spacing (замена Cal Sans) */
+.slidev-layout h1 {
+  font-family: var(--font-sans);
+  font-size: 2.25rem; /* display-md · 36px */
   font-weight: 600;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  letter-spacing: -0.028em;
   color: var(--ink);
-  line-height: 1.08;
 }
-
-/* Вторичные заголовки */
-.slidev-layout h3,
+.slidev-layout h2 {
+  font-size: 1.75rem; /* display-sm · 28px */
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+}
+.slidev-layout h3 {
+  font-size: 1.125rem; /* title-md · 18px */
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
 .slidev-layout h4 {
+  font-size: 1rem; /* title-sm · 16px */
+  font-weight: 600;
+  line-height: 1.4;
   color: var(--ink);
-  letter-spacing: -0.01em;
 }
 
-/* Таблицы: тонкие рамки, воздух, моно для числовых ячеек */
+/* Базовый текст */
+.slidev-layout p,
+.slidev-layout li {
+  color: var(--body);
+}
+.slidev-layout ul {
+  list-style: disc;
+}
+
+/* Таблицы: hairline-разделители, тёмная линия под шапкой */
 .slidev-layout table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
+}
+.slidev-layout tr {
+  border-bottom: none;
 }
 .slidev-layout th {
   text-align: left;
   font-weight: 600;
   color: var(--ink);
   padding: 0.55rem 0.9rem;
-  border-bottom: 2px solid var(--sapphire);
+  border-bottom: 2px solid var(--ink);
 }
 .slidev-layout td {
   padding: 0.55rem 0.9rem;
-  border-bottom: 1px solid var(--border);
-  color: var(--ink);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--body);
 }
 .slidev-layout tr:last-child td {
   border-bottom: none;
 }
+/* «Featured»-строка — signal через surface, как featured-тариф */
+.slidev-layout tr.featured td {
+  background: var(--surface-card);
+}
 .slidev-layout td.num,
 .slidev-layout th.num {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-mono);
   text-align: right;
   white-space: nowrap;
 }
 
-/* Ссылки: приглушённый акцент вместо пунктира темы */
+/* Ссылки: монохромные (text-link), без пунктира темы */
 .slidev-layout a {
-  color: var(--sapphire);
-  border-bottom: 1px solid color-mix(in srgb, var(--sapphire) 35%, transparent);
+  color: var(--ink);
+  border-bottom: 0;
   text-decoration: none;
-  transition: border-color 0.15s ease;
-}
-.slidev-layout a:hover {
-  border-bottom-color: var(--sapphire);
 }
 
-/* Номер слайда: низ-справа, моно, приглушённый */
+/* Подписи к блокам данных: mono, muted, uppercase */
+.num-cap,
+.code-cap,
+.col-cap {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.num-cap {
+  margin-top: 1.2rem;
+  margin-bottom: 0.6rem;
+}
+.code-cap {
+  margin-bottom: 0.6rem;
+}
+.col-cap {
+  margin-bottom: 0.6rem;
+}
+.col-cap.ok {
+  color: var(--success);
+}
+.col-cap.no {
+  color: var(--muted);
+}
+
+/* Риторический акцент: Inter 600, ink, редкий accent-бордер слева */
+.hook-line {
+  margin-top: 1.6rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  max-width: 46rem;
+}
+
+/* Тёмная закрывающая плитка (аналог footer): фон — в layout center-dark */
+.slidev-layout.center-dark a {
+  color: var(--on-dark-soft);
+}
+.slidev-layout.center-dark a:hover {
+  color: var(--on-dark);
+}
+.slidev-layout.center-dark .slidev-slide-number {
+  color: var(--muted-soft);
+}
+
+/* Номер слайда: низ-справа, mono, fine-print */
 .slidev-slide-number {
   position: absolute;
   bottom: 0.9rem;
   right: 1.2rem;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   letter-spacing: 0.05em;
-  color: var(--ink-dim);
+  color: var(--muted-soft);
+}
+
+/* ── Обложка ──────────────────────────────────────────────────────────── */
+.slidev-layout .title h1 {
+  font-size: 4rem;
+  line-height: 1.05;
+  letter-spacing: -0.031em;
+  color: var(--ink);
+}
+.cover-meta {
+  position: absolute;
+  bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.cover-author {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.cover-contacts,
+.cover-date {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--muted-soft);
+}
+.slidev-layout .cover-contacts a {
+  color: var(--muted-soft);
+  text-decoration: none;
+}
+
+/* ── Финальный тёмный слайд (thanks) ─────────────────────────────────── */
+.slidev-layout .thanks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  text-align: center;
+}
+.slidev-layout.center-dark .thanks-title {
+  font-size: 4rem;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.031em;
+  color: var(--on-dark);
+}
+.slidev-layout .thanks-sub {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  color: var(--on-dark-soft);
+}
+.slidev-layout .thanks-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+.slidev-layout .thanks-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--on-dark);
+}
+.slidev-layout .thanks-links {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--on-dark-soft);
+}
+.slidev-layout .thanks-links a {
+  color: var(--on-dark-soft);
+  text-decoration: none;
 }

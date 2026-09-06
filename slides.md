@@ -1,6 +1,6 @@
 ---
 theme: default
-title: 1 млрд токенов в сутки на потребительских видеокартах
+title: 1 млрд токенов в сутки на потребительских видеокартах | Сапронов Александр
 layout: cover
 info: |
   ## Data Fest Siberia 7
@@ -15,12 +15,13 @@ transition: slide-left
 comark: true
 duration: 30min
 fonts:
-  sans: Radio Canada Big
-  serif: Source Serif 4
-  mono: Geist Mono
+  sans: Inter
+  serif: Inter
+  mono: JetBrains Mono
+  weights: '400,500,600'
 ---
 
-<div class="title-hero">
+<div class="title">
 
 # 1 млрд токенов в сутки на потребительских видеокартах
 
@@ -35,17 +36,6 @@ fonts:
   <div class="cover-contacts"><a href="https://t.me/axsapronov">t.me/axsapronov</a></div>
   <div class="cover-date">Data Fest Siberia 7 · Новосибирск · 10 октября 2026</div>
 </div>
-
-<style>
-.title-hero h1 { font-size: 4.0rem; line-height: 1.02; color: var(--ink); }
-.subtitle { margin-top: 1.4rem; font-size: 1.4rem; color: var(--ink-dim); }
-.cover-meta { position: absolute; bottom: 2.5rem; left: 2.5rem; display: flex; flex-direction: column; gap: 0.3rem; }
-.cover-author { font-size: 1.3rem; font-weight: 600; color: var(--ink); }
-.cover-contacts { font-family: 'Geist Mono', monospace; font-size: 0.95rem; color: var(--ink-dim); }
-.cover-contacts a { color: var(--ink-dim); text-decoration: none; }
-.cover-contacts a:hover { color: var(--sapphire); }
-.cover-date { font-family: 'Geist Mono', monospace; font-size: 0.95rem; color: var(--ink-dim); }
-</style>
 
 <!--
 Приветствие, представление, 1-2 минуты.
@@ -62,11 +52,11 @@ hideInToc: true
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
-layout: center
+layout: section
 title: Почему self-hosted LLM
 ---
 
-<SectionCard kicker="Раздел 1" title="Почему self-hosted LLM" />
+<SectionCard kicker="Раздел 1" title="Почему self-hosted LLM" tone="emerald" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -85,10 +75,6 @@ hideInToc: true
 </v-clicks>
 
 <div class="hook-line">Я перестал быть пользователем API и стал оператором инфраструктуры.</div>
-
-<style>
-.hook-line { margin-top: 1.6rem; font-family: 'Source Serif 4', Georgia, serif; font-size: 1.5rem; color: var(--sapphire); }
-</style>
 
 <!--
 Хук: конкретный счёт, а не «API дорогой». Агент сжигает больше токенов, чем мы зарабатываем.
@@ -121,10 +107,6 @@ hideInToc: true
 - **Контроль** — я вижу каждый токен: где сгенерирован, сколько стоит, почему запрос занял 8 секунд
 </v-clicks>
 
-<style>
-.num-cap { margin-top: 0.4rem; font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sapphire); }
-</style>
-
 <!--
 «API дорогой, локально дешевле» — скучная аргументация. Для нас критичны три вещи:
 приватность (RU-рынок, чувствительный код), автономность (uptime, блокировки), контроль (каждый токен виден).
@@ -147,10 +129,6 @@ hideInToc: true
 
 <div class="num-cap">Сейчас: 4×(2×RTX 3090) + 2×RTX 4070 Ti + 4×RTX 3060 — инференс на 8×3090, RAG/embedding/dev на 4070 Ti и 3060</div>
 
-<style>
-.num-cap { margin-top: 1.2rem; font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; color: var(--sapphire); }
-</style>
-
 <!--
 Цифры — из моих замеров на конкретном железе, не из документации.
 Фаза 0: для чата нормально, для агента нет — 12 tok/s превращает 30-минутную задачу в полтора часа.
@@ -160,11 +138,11 @@ hideInToc: true
 -->
 
 ---
-layout: center
+layout: section
 title: Что дают consumer GPU
 ---
 
-<SectionCard kicker="Раздел 2" title="Что дают consumer GPU" />
+<SectionCard kicker="Раздел 2" title="Что дают consumer GPU" tone="violet" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -192,13 +170,6 @@ hideInToc: true
 - Заменяет Claude/GPT не для всех задач — только для своих
 
 <div class="hook-line">Ожидания нужно резать сразу — и команда будет довольна.</div>
-
-<style>
-.col-cap { font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; }
-.col-cap.ok { color: var(--sapphire); }
-.col-cap.no { color: var(--ink-dim); }
-.hook-line { margin-top: 1.4rem; font-family: 'Source Serif 4', Georgia, serif; font-size: 1.4rem; color: var(--sapphire); }
-</style>
 
 <!--
 Честные ожидания: consumer-кластер решает реальные задачи (агентный кодинг, RAG, 24/7),
@@ -236,19 +207,20 @@ hideInToc: true
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-| Модель | tok/s | TTFT (8K) | Terminal-Bench | DeepSWE |
-|---|---:|---:|---:|---:|
-| **Qwen3.8-27B-AWQ-MTP** | **75** | **1.8s** | **73.0** | **42.2** |
-| Qwen3.6-27B | 64 | 2.0s | 63.4 | 13.3 |
-| GLM-4.6 | 48 | 2.4s | 61.2 | 17.5 |
-| Gemma4-26B | 66 | 2.0s | 52.4 | 8.9 |
-| DeepSeek-V3.2 · Llama 4 Scout (MoE) | — | — | — | не влезает |
+<table>
+  <thead>
+    <tr><th>Модель</th><th class="num">tok/s</th><th class="num">TTFT (8K)</th><th class="num">Terminal-Bench</th><th class="num">DeepSWE</th></tr>
+  </thead>
+  <tbody>
+    <tr class="featured"><td><b>Qwen3.8-27B-AWQ-MTP</b></td><td class="num"><b>75</b></td><td class="num"><b>1.8s</b></td><td class="num"><b>73.0</b></td><td class="num"><b>42.2</b></td></tr>
+    <tr><td>Qwen3.6-27B</td><td class="num">64</td><td class="num">2.0s</td><td class="num">63.4</td><td class="num">13.3</td></tr>
+    <tr><td>GLM-4.6</td><td class="num">48</td><td class="num">2.4s</td><td class="num">61.2</td><td class="num">17.5</td></tr>
+    <tr><td>Gemma4-26B</td><td class="num">66</td><td class="num">2.0s</td><td class="num">52.4</td><td class="num">8.9</td></tr>
+    <tr><td>DeepSeek-V3.2 · Llama 4 Scout (MoE)</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td>не влезает</td></tr>
+  </tbody>
+</table>
 
 <div class="num-cap">Qwen3.8 — лучший *для моих задач на моём железе*, а не лучший в мире. Для другого стека победитель мог бы быть другим</div>
-
-<style>
-.num-cap { margin-top: 1.2rem; font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; color: var(--sapphire); }
-</style>
 
 <!--
 DeepSeek-V3.2 (MoE 671B) и Llama 4 Scout (MoE 109B) — не влезает. Точка.
@@ -281,10 +253,6 @@ MTP:       [T1 T2 T3] → verify    1 шаг
 - Это не магия, а архитектура Qwen. На H100 выигрыш меньше, на «узком» consumer-железе — **решающий**
 </v-clicks>
 
-<style>
-.code-cap { font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sapphire); }
-</style>
-
 <!--
 MTP-головы — архитектурное решение Qwen. Decode на 3090 упирается в пропускную способность памяти,
 поэтому спекулятивное декодирование даёт здесь больше, чем на H100.
@@ -306,21 +274,17 @@ hideInToc: true
 
 <div class="hook-line">Я не собирал H100-кластер. Я собирал то, что было доступно и по карману — и этого хватило.</div>
 
-<style>
-.hook-line { margin-top: 1.6rem; font-family: 'Source Serif 4', Georgia, serif; font-size: 1.5rem; color: var(--sapphire); }
-</style>
-
 <!--
 Риторика «consumer GPU — это компромисс» верна, но компромисс посчитан:
 нет FP8/NVLink, 24GB потолок — и при этом 1 млрд токенов/сутки.
 -->
 
 ---
-layout: center
+layout: section
 title: "Как это реально запускать: GPUStack + vLLM"
 ---
 
-<SectionCard kicker="Раздел 3" title="Как это реально запускать: GPUStack + vLLM" />
+<SectionCard kicker="Раздел 3" title="Как это реально запускать: GPUStack + vLLM" tone="orange" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -376,10 +340,6 @@ vllm serve Qwen3.8-27B-AWQ-MTP \
 - **Не настроил KV-cache** — контекст 32K по умолчанию, 256K не заявлен
 - **OMP_NUM_THREADS по умолчанию** — CPU-многопоточность создаёт overhead, а не ускорение
 </v-clicks>
-
-<style>
-.code-cap { font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sapphire); }
-</style>
 
 <!--
 Все три ошибки — дефолты. Первый конфиг — baseline, и именно он показал, где боль.
@@ -444,21 +404,17 @@ vllm serve Qwen3.8-27B-AWQ-MTP \
 - **8 параллельных запросов** — для агента 2 достаточны; 8 — это жертва контекстом и TTFT ради throughput, который мне не нужен
 </v-clicks>
 
-<style>
-.num-cap { font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sapphire); }
-</style>
-
 <!--
 Полный финальный конфиг — 4 параметра тюнинга + дефолты, которые важно не трогать.
 NVFP4 и TRT-LLM из 0.28.0 — фичи Hopper/Blackwell, на Ampere бесполезны.
 -->
 
 ---
-layout: center
+layout: section
 title: Какие метрики важны
 ---
 
-<SectionCard kicker="Раздел 4" title="Какие метрики важны и сколько чего надо" />
+<SectionCard kicker="Раздел 4" title="Какие метрики важны и сколько чего надо" tone="pink" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -487,10 +443,6 @@ hideInToc: true
 - **context-aware** — prompt > 100K → реплика с максимальным свободным KV-cache
 - **failover** — 5s без ответа → убрать из пула, retry на другой
 
-<style>
-.num-cap { font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sapphire); margin-bottom: 0.6rem; }
-</style>
-
 <!--
 Round-robin «не сломан» — он просто отвечает на другой вопрос.
 Ключевая мысль: балансировка LLM — про состояние (KV-cache), а не про соединения.
@@ -513,10 +465,6 @@ hideInToc: true
 | Failover | 30s (timeout) | **5s** |
 
 <div class="num-cap">P99 ниже в 2.7 раза, KV-cache hit rate выше почти в 3 раза — прямая работа prefix-aware routing · 400 строк Go, не 4000: для 30 реплик нужен K8s</div>
-
-<style>
-.num-cap { margin-top: 1.2rem; font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; color: var(--sapphire); }
-</style>
 
 <!--
 Failover 5s против 30s — разница между «сбоем» и «просто задержкой».
@@ -542,10 +490,6 @@ hideInToc: true
 | **Payback** | **~1.5 месяца** |
 
 <div class="num-cap">1 млрд токенов/сутки — пик (8–12 часов агентного кодинга); в среднем 300–500M/сутки. Пик определяет размер инфраструктуры, средний — экономику</div>
-
-<style>
-.num-cap { margin-top: 1.2rem; font-family: 'Geist Mono', monospace; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; color: var(--sapphire); }
-</style>
 
 <!--
 Цифры — для ядра фермы 6×3090 (замеры из блога); ферма с тех пор выросла до 8×3090 + RAG-узел.
@@ -575,11 +519,11 @@ hideInToc: true
 -->
 
 ---
-layout: center
+layout: section
 title: Заключение
 ---
 
-<SectionCard kicker="Раздел 5" title="Заключение" />
+<SectionCard kicker="Раздел 5" title="Заключение" tone="canvas" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -599,17 +543,13 @@ hideInToc: true
 
 <div class="hook-line">Это не конец, а checkpoint. Через 6 месяцев я это перепишу.</div>
 
-<style>
-.hook-line { margin-top: 1.6rem; font-family: 'Source Serif 4', Georgia, serif; font-size: 1.5rem; color: var(--sapphire); }
-</style>
-
 <!--
 Финал: 24/7, без лимитов, без счетов, без зависимости от чужого uptime — и это стоит $3,200/год,
 а не $20–73K. Roadmap: Qwen4 (3090 не потянет — нужен 4090/H100), RAG-сервис, AI Gateway.
 -->
 
 ---
-layout: center
+layout: center-dark
 hideInToc: true
 ---
 
@@ -626,17 +566,6 @@ hideInToc: true
 </div>
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
-<style>
-.thanks { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; text-align: center; }
-.thanks-title { font-size: 4rem; line-height: 1.05; }
-.thanks-sub { font-family: 'Source Serif 4', Georgia, serif; font-size: 2rem; color: var(--sapphire); }
-.thanks-contact { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
-.thanks-name { font-size: 1.3rem; font-weight: 600; color: var(--ink); }
-.thanks-links { font-family: 'Geist Mono', monospace; font-size: 1rem; color: var(--ink-dim); }
-.thanks-links a { color: var(--ink-dim); text-decoration: none; }
-.thanks-links a:hover { color: var(--sapphire); }
-</style>
 
 <!--
 Финал: Q&A, ссылки, контакты.
