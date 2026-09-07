@@ -117,4 +117,4 @@ components.d.ts
 *-export.pdf
 *-export.pptx
 .kilo/plans
-.shot_tmp.mjs
+.shot*.mjs
