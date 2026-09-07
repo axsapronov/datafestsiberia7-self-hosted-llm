@@ -46,8 +46,6 @@ layout: two-cols
 hideInToc: true
 ---
 
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
 # План доклада
 
 ::left::
@@ -151,7 +149,17 @@ Cloud - чтобы быстро двигаться, Self-hosted - чтобы д�
 -->
 
 ---
-title: Что ожидают пользователи?
+layout: section
+hideInToc: true
+title: С чего начать Self-hosted?
+---
+
+<SectionCard kicker="" title="С чего начать Self-hosted?" tone="violet" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+---
+title: Подготовка — что ожидают пользователи, как запускать
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
@@ -198,19 +206,73 @@ API: OpenAI/Anthropic-совместимый — код-агенты (pi.dev, Cu
 tool use на уровне Claude Code, и стабильные (не «иногда 30, иногда 5») 80+ tok/s.
 -->
 
-
 ---
-title: Как запустить LLM модель?
+title: Чем запустить LLM модель?
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Как запустить LLM модель?
+# Чем запустить LLM модель?
 
-- TODO
-- Inference движки, ollama, llama.cpp, vllm, sglang, etc
 
+<EngineCompare />
+
+<img class="model-load-path" src="/img/model-loading.svg" alt="Путь модели: скачиваем с HuggingFace (X GB) → сохраняем на диск (X GB) → загружаем в RAM (1.2X GB) → загружаем в VRAM (1–2X GB). X — размер модели; коэффициенты — сколько нужно относительно размера модели">
+
+<div class="hook-line">Движок — это способ раскладки модели в VRAM + API обращения к модели</div>
+
+<!--
+Шкала оценок (1–5, точки: оранжевые — сложность, изумрудные — возможности).
+Сложность — порог входа (настройка, зависимости, понимание параметров).
+Возможности — что умеет движок (batching, квантизация, TP, API, hardware-coverage).
+Лестница: чем выше по списку, тем сложнее и тем мощнее. vLLM — оптимум «сложность/возможности»
+(3/5 vs 4/5), поэтому путь до 1 млрд токенов — Ollama → llama.cpp → vLLM.
+
+Схема под таблицей — путь модели: скачиваем с HuggingFace (X GB) → сохраняем на диск (X GB) →
+загружаем в RAM (1.2X GB) → загружаем в VRAM (1–2X GB). X — размер модели на диске,
+коэффициенты — сколько нужно относительно размера модели:
+- RAM 1.2X — транзитный буфер: модель читается в RAM, потом копируется в VRAM; +10–20% overhead (OS, буферы, CUDA context).
+- VRAM 1–2X — веса (1X) + KV-cache (растёт с контекстом и конкурентностью: 0 → 1X+ на длинном) + 10–20% overhead.
+  Короткий контекст ~1.1–1.3X, длинный (128K+) — 2X и выше.
+Модель не грузится «напрямую в GPU» — она идёт через RAM. Движок организует эту раскладку весов в VRAM + API.
+Наш стек (Qwen3.8-27B-AWQ, 16 GB на диске, 2×RTX 3090): RAM ≥ 32 GB (2X, с запасом),
+VRAM ~20–24 GB на 32K контекст (1.3–1.5X), до ~39 GB на 256K (2.4X).
+Источники: Runpod / Netra / Modular (VRAM = веса + KV-cache, overhead 10–20%) · GIGAGPU (RAM при загрузке).
+
+Полное сравнение движков (детали для речи):
+- vLLM — де-факто стандарт production-сервинга. NVIDIA (CUDA), AMD ROCm, TPU, Gaudi, CPU.
+  Safetensors, AWQ, GPTQ, FP8, INT8, bitsandbytes. PagedAttention, continuous batching,
+  OpenAI API, самый широкий hardware-coverage и экосистема. Default-выбор для self-hosted production.
+- SGLang — максимальный throughput + structured output. GPU-first. RadixAttention (prefix-cache):
+  до ~29% быстрее vLLM на H100, до 6.4× на prefix-heavy нагрузках; xGrammar для JSON/structured output.
+  Берём, если workload уйдёт в агентов с длинным общим system prompt.
+- TensorRT-LLM — максимальная производительность, только NVIDIA. FP8/FP4 (NVFP4), AWQ/GPTQ (W4A16/W4A8), INT8.
+  Самый высокий peak throughput и минимальная латентность на H100/H200/B200, но нужна компиляция модели
+  (длинный cold start, пересборка при смене модели). На 3090 нецелесообразно — не наш сценарий.
+- llama.cpp — edge / CPU / consumer GPU. GGUF (Q4_K_M, Q5_K_M, Q8_0). Чистый C/C++, без зависимостей,
+  offload слоёв CPU↔GPU, работает на 8 GB VRAM и даже на чистом CPU.
+- Ollama — одна команда, OpenAI-совместимый API, реестр готовых моделей. Dev, эксперименты, прототипы.
+- TGI (Hugging Face) — maintenance mode (2026): брать только если уже сидите в HF-стеке.
+- LMDeploy (TurboMind) — ~1.5–1.8× throughput vs vLLM на A100/H100 (Llama-3.1-8B: ~16 200 tok/s на H100).
+
+Форматы моделей: GGUF → локальный/edge (llama.cpp/Ollama); AWQ/FP8 → production-сервер (vLLM/SGLang).
+Наш стек (Qwen3.8-27B-AWQ-MTP, 2×RTX 3090, Ampere): vLLM — основной production-движок (AWQ, TP=2, MTP);
+SGLang — альтернатива при prefix-heavy нагрузке; llama.cpp/Ollama — edge и CPU-фолбэк;
+TensorRT-LLM — не наш сценарий (H100+ и компиляция моделей).
+Источники: LeetLLM 2026 · Particula (SGLang vs vLLM) · PremAI 2026 · CloudAI H100 benchmarks 2026 ·
+Digital Applied (GGUF vs AWQ vs GPTQ vs MLX) · Spheron (LMDeploy) · vLLM docs · BuildMVPFast (TGI).
+-->
+
+---
+layout: section
+hideInToc: true
+title: Поехали запускать!
+---
+
+<SectionCard kicker="" title="Поехали запускать!" tone="violet" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 ---
 title: Начинаем — запуск первой модели, ollama
@@ -268,7 +330,6 @@ hideInToc: true
 TODO(спикер): контекст — 4096 (дефолт) или 16k (из заметок «Начало»)? quality — какая модель влезла в 24GB?
 -->
 
-
 ---
 title: Что дальше? Больше видеокарт и llama.cpp
 hideInToc: true
@@ -279,10 +340,6 @@ hideInToc: true
 # Что дальше? Больше видеокарт и llama.cpp
 
 <StageIdeas stage="s1" />
-
-
-
-
 
 <!--
 Шесть идей — сетка 2×3, у каждой тег(и) параметра (цветная точка = палитра user-expectations.svg):
@@ -295,34 +352,52 @@ hideInToc: true
 Переход к следующему слайду: как это выглядело в железе — шаг за шагом.
 -->
 
-
-
 ---
-title: GPUStack — панель управления self-hosted
+title: GPUStack — оркестратор ИИ
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# GPUStack — панель управления self-hosted
+# GPUStack — оркестратор ИИ
 
-- TODO
-- Перечень возможностей (ai gateway)
-- Скриншоты
+<GpuStackPanel />
 
+<div class="hook-line">Кластер стал сервисом: модели, реплики, ключи, статистика — одна панель</div>
+
+<!--
+GPUStack — open-source GPU-кластер-менеджер: AI gateway для self-hosted кластера.
+Одна панель: деплой моделей, воркеры, API-ключи, статистика использования.
+
+Слайд — 2 колонки. Слева 4 возможности панели, каждая со своей мини-визуализацией:
+- Модели: скачивание с Hugging Face / ModelScope / локального пути, replicas N,
+  auto-restart при ошибке (exponential backoff, до 5 минут) → пилюля «Running · 1/1».
+- Движки: подключаемые — vLLM, SGLang, TensorRT-LLM, MindIE + custom → чипы рантаймов.
+  В нашем стеке: llama.cpp (этап 2), vLLM (этап 3).
+- API: OpenAI-совместимый /v1/chat/completions; API-ключи: доступ по моделям,
+  срок действия, SSO → код-чип endpoint + Bearer.
+- Статистика: токены и запросы по пользователям и API-ключам (Usage & Billing) →
+  метрика 343 tok/s. Это ответ на ожидание «статистика и управление доступами».
+
+Справа 2×2: 3 скриншота реального UI + Usage-график.
+- Каталог — выбор модели из каталога (Qwen, GLM, Gemma, Nemotron…).
+- Deployments — Running, реплики 1/1 (0.8B-модель из каталога — демо; у нас — 27B AWQ на 2×3090).
+- Chat — playground: ответ + Token Usage 62 + Output 343.28 Tokens/s.
+- Usage & Billing — мини-график «кто сколько сжёг» (токены по пользователям).
+Наш стек на этом этапе: 2 сервера (3060 + 4070 Ti) под Proxmox, GPUStack + llama.cpp.
+Источники: docs.gpustack.ai — Overview, Model Deployment Management,
+API Key Management, Model Route Management, Usage.
+-->
 
 ---
-title: Что настраивать в движке inference?
+layout: section
 hideInToc: true
+title: Продолжаем тюнить
 ---
+
+<SectionCard kicker="" title="Продолжаем тюнить" tone="violet" />
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
-# Что настраивать в движке inference?
-
-- TODO
-- Обобщенный алгорим
-
 
 ---
 title: Продолжаем — Proxmox, GPUStack, llama.cpp
@@ -354,9 +429,6 @@ llama.cpp — рантайм: контекст под задачу, модель
 Цена этапа: электричество 24/7 (начался счёт), китайские материнские платы (хуанан).
 -->
 
-
-
-
 ---
 title: Итого — для 1 отдела хватит
 hideInToc: true
@@ -387,13 +459,10 @@ hideInToc: true
 
 <StageIdeas stage="s2" />
 
-<div class="hook-line">TODO (спикер): hook-line</div>
-
 <!--
 TODO(спикер): идеи S2 не собраны. Кандидаты: докупить 3090, TP, переход на vLLM.
 Заполнить до финального экспорта.
 -->
-
 
 ---
 title: Подбор модели под железо
@@ -404,13 +473,109 @@ hideInToc: true
 
 # Подбор модели под железо
 
-- TODO
-- Квантование
-- https://github.com/intel/auto-round
-- Архитектура поколений видеокарт
+<VramBudget />
 
+<div class="hook-line">На Ampere нет FP8 — поэтому 27B на 2×3090 живёт в AWQ INT4</div>
 
+<!--
+Как подбирать версию модели под железо — алгоритм (6 шагов):
+1. БЮДЖЕТ VRAM: суммарная VRAM кластера × gpu-memory-utilization (≈0.90) − overhead (~10–15%).
+2. ЦЕЛЕВОЙ WORKLOAD: макс. контекст (8K / 32K / 128K?), целевая concurrency (1 / 4 / 16?) →
+   KV-cache = f(контекст, concurrency, архитектура).
+3. РАЗМЕР МОДЕЛИ: weights_VRAM ≈ params × bytes/param × 1.2; weights + KV ≤ бюджет →
+   максимальный размер, который влезает.
+4. ФОРМАТ ПОД GPU-АРХИТЕКТУРУ:
+   - Ampere (RTX 3090/4090, A100): AWQ / GPTQ INT4 (W4A16); FP8 недоступен.
+   - Hopper/Blackwell (H100/H200/B200): FP8 / NVFP4 — максимум throughput; AWQ — запасной.
+   - CPU / edge / мало VRAM: GGUF Q4_K_M / Q5_K_M / Q8_0.
+5. ПРОВЕРКА: weights + KV + overhead ≤ бюджет? Если OOM — лестница снижения:
+   контекст ↓ → concurrency ↓ → квант ниже (Q4) → KV-cache FP8/INT8 (--kv-cache-dtype fp8)
+   → CPU offload → больше GPU (TP).
+6. ВАЛИДАЦИЯ КАЧЕСТВА: бенчмарк на целевых задачах (code / RAG / chat) vs FP16 baseline
+   → фиксация модели + кванта в документацию.
 
+Формулы:
+- Веса: weights_VRAM ≈ params × bytes/param × 1.2 (×1.2 — embeddings, CUDA context).
+  bytes/param: FP16/BF16 = 2 (27B ≈ 65 GB, 70B ≈ 168 GB) · FP8 = 1 (27B ≈ 32, 70B ≈ 84) ·
+  AWQ/GPTQ INT4 = 0.5 (27B ≈ 16, 70B ≈ 42) · GGUF Q4_K_M ≈ 0.55 (27B ≈ 17) · GGUF Q8_0 ≈ 1.07 (27B ≈ 34).
+- KV-cache (на 1 запрос): bytes/token = 2 × n_layers × n_kv_heads × head_dim × bytes_per_element;
+  множитель 2 — храним и K, и V. GQA (мало KV-голов) сильно снижает размер.
+  Пример: 27B dense, GQA, BF16 KV ≈ 1–4 GB на 32K контекст; при concurrency 4 — умножаем на 4.
+  KV-cache не квантуется вместе с весами — отдельный потребитель VRAM (можно FP8/INT8 KV: --kv-cache-dtype fp8).
+- Бюджет: weights + KV × concurrency + overhead ≤ VRAM × gpu-memory-utilization.
+
+Форматы — когда что брать:
+- FP16/BF16: 80 GB+ GPU, потеря 0% — эталон, валидация качества.
+- FP8 / NVFP4: Hopper/Blackwell, потеря <1% — production на H100, максимум throughput.
+- AWQ INT4 (W4A16): любая NVIDIA вкл. Ampere, потеря ~1–3% — default для RTX 3090/4090,
+  лучшее качество среди 4-bit (защита «важных» весов до квантизации).
+- GPTQ INT4 (W4A16): любая NVIDIA, потеря ~2–5% (чуть хуже AWQ на code) — запасной, если AWQ-чека нет.
+- GGUF Q4_K_M / Q5_K_M / Q8_0: CPU, любая GPU, Mac; Q4 ~3–5%, Q8 <1% — edge, Ollama, мало VRAM, CPU offload.
+Правила: Ampere → AWQ (FP8 нет); H100+ → FP8 (AWQ — fallback). Качество критично → AWQ > GPTQ;
+VRAM критична → GGUF Q4_K_M (лучший баланс размер/качество). Длинный контекст → KV FP8/INT8
+или снизить max-model-len. MoE (35B-A3B, DeepSeek): активные параметры малы — 35B-A3B в Q4
+живёт на 24 GB, 120+ tok/s. Инструменты квантизации: auto-round (github.com/intel/auto-round), gptq-forge.
+
+Наш стек (Qwen3.8-27B, 2×RTX 3090 = 48 GB, бюджет ≈ 43 GB):
+- FP16 ≈ 65 GB — OOM, не влезает.
+- FP8 ≈ 32 GB — недоступно: на Ampere нет FP8.
+- AWQ W4A16: 16 GB весов (TP=2) + KV 2–4 GB (32K, 1 req) + overhead ≈ 5 GB → ~20–25 GB ✅ — наш выбор.
+- GGUF Q4_K_M ≈ 17 GB → ~22 GB — альтернатива (llama.cpp).
+Продакшн-реальность: 256K контекст → KV-cache растёт до ~18 GB, итого ~39 GB — влезает,
+но max-num-seqs = 2 (KV съедает бюджет — см. «Итоги»).
+
+Источники: alesha.pro (квантизация LLM 2026; сколько VRAM нужно для LLM) · kunwar.page (формула KV-cache)
+· spheron.network (GPU sizing 2026) · iternal.ai (on-prem, W4A16 vs W8A8) · particula.tech (AWQ vs GPTQ vs FP8)
+· premiai.io (GGUF vs AWQ vs GPTQ vs bitsandbytes) · tomodahinata.com (serving economics, KV budget)
+· codersera.com (Qwen 3.6 27B dense vs 35B MoE на RTX 3090) · hivenet.com (KV cache и контекст, GQA).
+-->
+
+---
+title: Что настраивать в движке inference?
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Что настраивать в движке inference?
+
+<EngineTuning />
+
+<div class="hook-line">Один параметр за раз — иначе не поймёшь, что именно дало эффект</div>
+
+<!--
+Тюнинг — не магия и не «крутим всё подряд», а повторяемый алгоритм:
+workload → базовый конфиг → измерить baseline → итеративно крутить 4 группы
+→ стабилизировать. Метрики-цели: TTFT (задержка первого токена),
+TPOT/ITL (задержка на токен в декодинге), throughput (tok/s на GPU), VRAM headroom.
+
+Правила, которые надо озвучить:
+1. Один параметр за раз — иначе невозможно понять, что дало эффект.
+2. Сначала память, потом скорость: OOM лечится max-model-len ↓ →
+   gpu-memory-utilization ↓, и только потом крутим batching.
+3. KV-cache — главный потребитель VRAM: max-model-len 131k → 32k может
+   освободить десятки GB; контекст — первая жертва при OOM.
+4. Chunked prefill включаем, когда длинные промпты «застревают» декодинг
+   (ITL spikes); размер чанка 2048–4096 балансирует TTFT и throughput.
+5. Speculative decoding (MTP) — добавляем последним: +30–100% decode-скорость,
+   но ест VRAM и может деградировать на длинном контексте.
+6. Prefix-heavy workload (агенты, RAG с общим system prompt) → SGLang +
+   RadixAttention или vLLM prefix caching — до 6x на общих префиксах.
+7. Валидация: бенчмарк при целевой concurrency (не пик), затем 24–72h
+   load-test и мониторинг — конфигурация фиксируется в документацию.
+
+Источники:
+- Sector88 — How to fix vLLM OOM: 2026 checklist (sector88.co/blog/how-to-fix-vllm-oom)
+- SGLang — Hyperparameter tuning (mem-fraction-static, schedule policy)
+  (github.com/sgl-project/sglang/blob/main/docs/advanced_features/hyperparameter_tuning.md)
+- CROZ — Tuning vLLM: token batching и chunked prefill (croz.net/run-your-own-ai-at-scale-vol-1-tuning-vllm/)
+- Kunwar — vLLM in production: every flag that matters (kunwar.page/chapter/048-vllm-in-production-every-flag-that-matters)
+- Habr — vLLM Production Stack: автоподбор gpu_memory_utilization и maxNumSeqs × max-num-batched-tokens (habr.com/ru/articles/1016062/)
+- NVIDIA Forum — MTP + 3 knob'а: max-num-batched-tokens 8192→4096, −30% TTFT (forums.developer.nvidia.com)
+- Spheron — DeepSeek-V4 MoE: OOM at launch → reduce max-model-len first (spheron.network)
+- Dre Dyson — Qwen3.6-27B deployment: gpu-memory-utilization 0.75, max-model-len 32768 (dredyson.com)
+- llama.cpp — server README: n_batch, n_ctx, flash attention, threads (github.com/ggml-org/llama.cpp)
+-->
 
 ---
 title: Балансировка LLM трафика
@@ -419,19 +584,90 @@ hideInToc: true
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Балансировка LLM трафика
+# Почему Round Robin не работает для LLM
 
-- TODO
-- Учет загруженности видеокарты
-- Учет температуры видеокарты
-- Учет прогретости кэша
+- **Запросы не однотипные**: chat — 10–20 с, агент — 1–3 мин (input 100k, output 5k) — в 100–10 000× дольше web-запроса
+- **Стоимость ∝ токенам**: prefill + decode держат слот минуты, а Round Robin об этом не знает
+- **KV-кэш на ноде**: диалог и общий system prompt должны оставаться на одной ноде — иначе каждый тур переплачивает prefill
 
+<img class="data-chart" src="/img/lb-round-robin.svg" alt="6 запросов на 3 репликах за 12 секунд: Round Robin — длинный запрос R1 (8 с) на ноде A, следующий по кругу запрос R4 ждёт в очереди 2 с, B и C простаивают; least-loaded — те же запросы распределяются по текущей загрузке, очереди нет">
 
+<div class="hook-line">Round Robin равномерно распределяет запросы — но LLM-запросы не равномерны. Мы распределяем нагрузку</div>
 
+<!--
+Контраст: web-запрос vs LLM-запрос.
+- Web-запрос: ~50 мс, однородные → Round Robin хорош: запросы равны, делить поровну можно.
+- LLM-запрос: 10 с — 10+ минут. Стоимость ∝ токенам: prefill (input, compute-bound) + decode (output, memory-bound).
+  Агентский запрос: input 100k токенов (prefill — секунды) + output 5k токенов ≈ 1 мин при 80 tok/s.
+- Почему RR ломается: RR распределяет «запросы», а не «нагрузку». Длинный запрос (R1) занимает слот 8 с,
+  следующий по кругу (R4) падает на ту же ноду → очередь. Остальные ноды простаивают.
+  Пользователь на «горячей» ноде видит просадку, остальные — пустоту.
+- KV-кэш: multi-turn диалог каждый тур пересылает всю историю. Та же нода → cache hit,
+  prefill в 5–10× быстрее; другая нода — пересчёт всего контекста. Общий system prompt (агенты) — то же.
+- Схема на слайде условная: 6 запросов, 3 реплики, 12 с. R1 — «тяжёлый» (100k prefill + decode, 8 с),
+  остальные — 1.5 с. Сверху — RR (по кругу). Снизу — least-loaded: каждый запрос — на наименее
+  загруженную; ничья — round-robin среди минимальных.
+- Переход: нагрузка — только половина дела. Вторая половина — KV-кэш (sticky) и health.
+-->
+
+---
+title: Балансировка LLM трафика
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Свой балансер: load · sticky · health
+
+| Сигнал | Источник | Правило |
+|---|---|---|
+| **Load** | vLLM `/metrics` (3 с) + in-flight WLC | сначала без очереди, затем least-loaded |
+| **Session** | header `x-session-id` | pin: TTL 60 мин, rebind после 3 spill |
+| **Prefix** | MD5(system prompt) | pin: TTL 5 мин, отпускается при перегрузе |
+| **Health** | scrape + 5xx | LIVE ⇄ PROBING ⇄ EJECTED, активный probe |
+
+<img class="data-chart" src="/img/lb-balancer.svg" alt="Пайплайн выбора реплики: пул LIVE ∪ PROBING → no-wait (waiting = 0) → least-loaded (min running) → pin (session → prefix) → affinity или load; health-машина: EJECTED → 2× scrape OK → PROBING → 15 s clean → LIVE, eject при 5xx burst / stuck 45 s / scrape fail ×2; EJECTED без user traffic, scrape продолжается">
+
+<div class="hook-line">Мягкий sticky: KV-кэш работает, а трафик не кристаллизуется на одной ноде</div>
+
+<!--
+Три сигнала: load, sticky, health. Принципы: routing простой, health не зависит от user traffic.
+
+1. LOAD — scrape vLLM /metrics каждые 3 с (num_running, num_waiting, KV usage) + локальный in-flight (WLC):
+   effective_running = max(scrape, in-flight); effective_waiting = waiting + max(0, in-flight − running).
+   WLC — weighted least connections: каждый in-flight запрос учитывается по весу токенов
+   (100k весит в 100× больше, чем 1k). Синхронизация со scrape: grace 15 с (запрос «в полёте»
+   не сбрасывается idle-scrape'ом), backstop 15 мин на потерянные completion-сигналы.
+   No-wait: если есть LIVE с waiting = 0 — берём только их. Least-loaded: min(effective_running),
+   ничья — round-robin, LIVE предпочтительнее PROBING.
+
+2. STICKY (soft affinity) — KV-кэш работает, трафик не кристаллизуется:
+   - Session key: из заголовков (x-session-id, x-kilo-session, x-claude-code-session-id, x-opencode-session,
+     x-kilocode-taskid, …) или body (conversation_id, thread_id). x-client-request-id исключён — это per-request id.
+   - Prefix key: MD5 первых 4096 символов system prompt; для multi-tenant — + project_id.
+   - Pin usable: LIVE + waiting = 0 + running ≤ min + slack (session 1, prefix 0).
+     Session держится при 1 vs 0, ломается при 2 vs 0; общий system prompt не держит горячую ноду (slack 0).
+   - Rebind: 3 spill подряд → session переезжает на новую ноду; force rebind: running(pin) − min ≥ 3 — сразу.
+     Prefix: expunge при повторяющемся spill. TTL: 60 мин / 5 мин — чинит «через 10 минут всё на одной».
+   - Новый bind только на LIVE; PROBING sticky не принимает.
+
+3. HEALTH — без user traffic:
+   - EJECT: 2× failed scrape, 5xx > 30%/мин, stuck (num_running > 0 и in-flight = 0 дольше 45 с), state ≠ running.
+   - Возврат: 2× scrape OK → PROBING (без sticky, ограниченный трафик), 15 s clean → LIVE.
+     Cooldown: 30 с базовый, экспоненциально до 300 с при повторных eject (защита от flap).
+   - EJECTED: user traffic нет, но /metrics скрейпится дальше — это единственный путь возврата.
+     Мёртвую реплику «не проверяем» пользовательскими запросами.
+
+Чего не делаем (осознанно): composite score, consistent hashing, Power of Two, температура GPU
+(лагging-сигнал; running/waiting — прямое измерение нагрузки), slow-start в routing — только в Grafana.
+Observability: Traffic Share, Affinity %, Spill Rate, Force-Rebind Rate, LIVE/PROBING/EJECTED,
+imbalance index + алерты (весь трафик на одной ноде, сломанный probe, prefix spill).
+-->
 
 ---
 title: Стабилизация — агенты, балансер, vllm
 ---
+
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
 # Стабилизация — агенты, балансер, vllm
@@ -446,8 +682,6 @@ title: Стабилизация — агенты, балансер, vllm
     { num: '06', title: 'Нужно пользоваться', metric: '100+', unit: 'ток/сек для чел.', dark: false },
   ]"
 />
-
-
 
 ---
 title: Итоги
@@ -473,8 +707,6 @@ API ✓ (vLLM OpenAI-совместимый), управление ✓ (GPUStack
 3. 24GB — потолок — max-num-seqs 2: 256K + 27B весов, параллельность 8 → 2 запроса.
 TODO(спикер): подтвердить черновик (75 tok/s, 1 млрд/сутки, Qwen3.8, MTP crash, max-num-seqs 2).
 -->
-
-
 
 ---
 

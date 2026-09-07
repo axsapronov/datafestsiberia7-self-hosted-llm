@@ -15,6 +15,11 @@ const stageData = () => STAGES[props.stage]
 
 const rowFor = (id: ParamId) => stageData().problems.find((p) => p.param === id)
 
+const rowClass = (id: ParamId) => {
+  const row = rowFor(id)
+  return row ? `sp-row--${row.status}` : ''
+}
+
 const STATUS_SYMBOL: Record<Status, string> = { ok: '✓', warn: '~', bad: '✗' }
 const STATUS_COLOR: Record<Status, string> = {
   ok: 'var(--success)',
@@ -35,7 +40,7 @@ const STATUS_COLOR: Record<Status, string> = {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="id in PARAM_ORDER" :key="id">
+        <tr v-for="id in PARAM_ORDER" :key="id" :class="rowClass(id)">
           <td>
             <span class="sp-param">
               <span class="sp-dot" :style="{ background: PARAMS[id].color }" aria-hidden="true"></span>
@@ -95,6 +100,18 @@ const STATUS_COLOR: Record<Status, string> = {
 
 .sp-table tr:last-child td {
   border-bottom: none;
+}
+
+.sp-row--ok {
+  background: color-mix(in srgb, var(--success) 6%, transparent);
+}
+
+.sp-row--warn {
+  background: color-mix(in srgb, var(--warning) 8%, transparent);
+}
+
+.sp-row--bad {
+  background: color-mix(in srgb, var(--error) 7%, transparent);
 }
 
 .sp-status-head {

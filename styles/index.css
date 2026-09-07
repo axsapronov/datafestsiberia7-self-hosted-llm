@@ -141,11 +141,11 @@
   text-align: left;
   font-weight: 500;
   color: var(--ink);
-  padding: 0.55rem 0.9rem;
+  padding: 0.35rem 0.6rem;
   border-bottom: 2px solid var(--ink);
 }
 .slidev-layout td {
-  padding: 0.55rem 0.9rem;
+  padding: 0.35rem 0.6rem;
   border-bottom: 1px solid var(--hairline);
   color: var(--body);
 }
@@ -215,6 +215,27 @@
 }
 .data-chart-wrap {
   margin-top: 0.3rem;
+}
+
+/* Схема «Диск → RAM → VRAM» (слайд «Чем запустить LLM модель?»):
+   центрируется под таблицей EngineCompare, ограничена по ширине, чтобы
+   уложиться над hook-line внизу */
+.model-load-path {
+  display: block;
+  width: 68%;
+  max-width: 620px;
+  height: auto;
+  margin: 1.2rem auto 0;
+}
+
+/* Скриншот UI (GPUStack): широкий баннер, hairline-бордер, скругление */
+.gpustack-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 0.5rem;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
 }
 
 /* Цитата: поверхность surface-card + mono-атрибуция (подпись автора) */

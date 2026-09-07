@@ -11,7 +11,7 @@ export interface Param {
 }
 
 export const PARAMS: Record<ParamId, Param> = {
-  speed: { id: 'speed', label: 'СКОРОСТЬ', color: '#3b82f6', expected: '80–100 tok/s' },
+  speed: { id: 'speed', label: 'СКОРОСТЬ', color: '#3b82f6', expected: '80–100 ток/сек' },
   context: { id: 'context', label: 'КОНТЕКСТ', color: '#8b5cf6', expected: '256k токенов' },
   volume: { id: 'volume', label: 'ОБЪЁМ', color: '#ec4899', expected: '50M токенов/сутки на чел.' },
   quality: { id: 'quality', label: 'КАЧЕСТВО', color: '#10b981', expected: '≥ Claude 3.5 Sonnet' },
@@ -56,7 +56,7 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
     name: 'M40 + Ollama',
     problems: [
       { param: 'speed', actual: '10–20 ток/сек', status: 'bad' },
-      { param: 'context', actual: '4096 (дефолт Ollama)', status: 'bad' },
+      { param: 'context', actual: '4k-32k (дефолт Ollama)', status: 'bad' },
       { param: 'volume', actual: '1 пользователь, всё очень долго', status: 'bad' },
       { param: 'quality', actual: 'Непонятно', status: 'bad' },
       { param: 'api', actual: 'Ollama API (OpenAI-совместимый)', status: 'warn' },
@@ -65,15 +65,13 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
     features: [
       { title: 'Шум · Telsa M40', value: '250W', text: 'вентилятор на 100% под нагрузкой, NVIDIA уже не поддерживает' },
       { title: 'Холодный старт', value: 'keep_alive 5m', text: 'модель выгружается из VRAM спустя 5 минут, по-умолчанию' },
-      { title: 'Ограниченный доступ', value: '—', text: 'тяжело организовать доступ по ключам, без доступа через VPN' },
+      { title: 'Не production', value: '', text: 'тяжело организовать доступ по ключам, без доступа через VPN' },
     ],
     ideas: [
-      { num: '01', title: 'Запустить серверы с RTX 3060/4070 Ti', text: 'можно купить, есть драйверы', feature: 'шум' },
+      { num: '01', title: 'Отказаться от Tesla M40', text: 'запустить серверы с RTX 3060/4070 Ti', feature: 'шум' },
       { num: '02', title: 'Заменить ollama на llama.cpp', text: 'больше инструкций, больше опыта, меньше посредников', params: ['volume', 'speed'] },
-      { num: '03', title: 'Настраиваем движок llama.cpp', text: 'читаем форумы, инструкции, увеличиваем контекст под задачу, до 100K', params: ['context'] },
-      { num: '04', title: 'Объединить серверы в Proxmox кластер', text: 'централизованный контроль за RAM, VRAM, SSD ', feature: 'надёжность' },
-      { num: '05', title: 'Устанавливаем GPUStack', text: 'статистика, управление пользователям, API-ключам', params: ['manage'] },
-      { num: '06', title: 'Настраиваем GPUStack', text: 'скачивание моделей, запуск и автоматический перезапуск', feature: 'надёжность' },
+      { num: '03', title: 'Объединить серверы в Proxmox кластер', text: 'централизованный контроль за RAM, VRAM, SSD ', feature: 'надёжность' },
+      { num: '04', title: 'Настроить оркестратор', text: 'статистика, управление пользователям, API-ключам', params: ['manage'] },
 
     ],
   },
@@ -95,11 +93,11 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
     ],
     ideas: [
       { num: '01', title: 'Перейти на пары RTX 3090', text: 'Это даст 48 GB VRAM' },
-      { num: '02', title: 'Научиться запускать модели через vLLM', text: 'Движок адаптирован под production нагрузку' },
+      { num: '02', title: 'Заменить llama.cpp на vLLM', text: 'Движок адаптирован под production нагрузку' },
       { num: '03', title: 'Подобрать версию модели под железо', text: 'Изучить виды квантизации, особенности алгоритмов' },
       { num: '04', title: 'Настроить контроль температура-мощность', text: 'Написать демона, который сам будет следить за перегревом' },
       { num: '05', title: 'Написать свой балансировщик', text: 'sticky session + prefix-aware', },
-      { num: '06', title: 'Встроить ИИ в рабочий процесс', text: 'CI/CD, SDLC, RAG',},
+      { num: '06', title: 'Встроить ИИ в рабочий процесс', text: 'CI review, SDLC, RAG',},
     ],
   },
   s3: {
