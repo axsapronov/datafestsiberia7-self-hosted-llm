@@ -101,9 +101,9 @@ const ticks = [0, 16, 32, 48, 64]
 
     <div class="vb-steps">
       <div class="vb-step">
-        <div class="vb-step-head"><span class="vb-step-num">01</span>Объем памяти</div>
-        <div class="vb-step-text">VRAM кластера × 0.90 − overhead</div>
-        <div class="vb-step-val">48 GB → ≈ 43 GB</div>
+        <div class="vb-step-head"><span class="vb-step-num">01</span>Возможный вес модели</div>
+        <div class="vb-step-text">Размер файлов модели − минимальный бъем VRAM</div>
+        <div class="vb-step-val">14 GB → 14+ GB VRAM</div>
       </div>
       <div class="vb-arrow" aria-hidden="true">
         <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
@@ -111,9 +111,9 @@ const ticks = [0, 16, 32, 48, 64]
         </svg>
       </div>
       <div class="vb-step">
-        <div class="vb-step-head"><span class="vb-step-num">02</span>Модель</div>
-        <div class="vb-step-text">максимальная: веса + KV ≤ бюджет</div>
-        <div class="vb-step-val">→ 27B · Qwen3.8</div>
+        <div class="vb-step-head"><span class="vb-step-num">02</span>Требуемый объем памяти</div>
+        <div class="vb-step-text">в зависимости от движка</div>
+        <div class="vb-step-val">llama.cpp → 1 х размер модели<br>vLLM → 2 x размер модели</div>
       </div>
       <div class="vb-arrow" aria-hidden="true">
         <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
@@ -123,7 +123,7 @@ const ticks = [0, 16, 32, 48, 64]
       <div class="vb-step">
         <div class="vb-step-head"><span class="vb-step-num">03</span>Квантизация</div>
         <div class="vb-step-text">по поколению GPU</div>
-        <div class="vb-step-val">Ampere → AWQ · Hopper → FP8 · CPU → GGUF</div>
+        <div class="vb-step-val">Ampere (30**) → AWQ <br>Ada Lovelace (40**) → NVFP4</div>
       </div>
     </div>
   </div>

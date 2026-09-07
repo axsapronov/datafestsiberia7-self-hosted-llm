@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 316" role="img" aria-label="3 реплики, балансер в деле: R1 — сессия привязана к реплике с тёплым кэшем (cache hit, TTFT 350→80 мс); R2 — vLLM забита (waiting=4), исключена из роутинга (EJECTED), запросы на неё не отправляются; R3 — холодная, сюда уходят новые сессии">
+  <defs>
+    <pattern id="hatch-amber" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="#f59e0b" opacity="0.14"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#f59e0b" stroke-width="2" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <g font-family="Inter, -apple-system, 'Segoe UI', sans-serif">
+
+    <!-- ── Панель · балансер в деле ───────────────────────────────────── -->
+    <rect x="8" y="6" width="864" height="310" rx="14" fill="#f5f5f5" stroke="#e5e7eb"/>
+    <text x="28" y="28" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="500" letter-spacing="0.08em" fill="#6b7280">3 РЕПЛИКИ · 12 СЕК · BALANCER В ДЕЛЕ</text>
+
+    <!-- grid -->
+    <g stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3 3" opacity="0.7">
+      <line x1="56" y1="36" x2="56" y2="226"/>
+      <line x1="189.3" y1="36" x2="189.3" y2="226"/>
+      <line x1="322.7" y1="36" x2="322.7" y2="226"/>
+      <line x1="456" y1="36" x2="456" y2="226"/>
+      <line x1="589.3" y1="36" x2="589.3" y2="226"/>
+      <line x1="722.7" y1="36" x2="722.7" y2="226"/>
+      <line x1="856" y1="36" x2="856" y2="226"/>
+    </g>
+
+    <!-- lane labels -->
+    <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" font-weight="600" fill="#111111">
+      <text x="28" y="53">R1</text>
+      <text x="28" y="119">R2</text>
+      <text x="28" y="185">R3</text>
+    </g>
+
+    <!-- R1: sticky — сессия на реплике с тёплым кэшем -->
+    <rect x="56" y="60" width="800" height="12" rx="3" fill="#10b981" opacity="0.6"/>
+    <text x="848" y="69" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#047857" text-anchor="end">warm</text>
+    <g>
+      <rect x="122.7" y="42" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="322.7" y="42" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="522.7" y="42" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <text x="130" y="52" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#ffffff">session · hit</text>
+    </g>
+
+    <!-- R2: vLLM забита — вне роутинга -->
+    <rect x="56" y="108" width="800" height="14" rx="4" fill="url(#hatch-amber)" stroke="#f59e0b" stroke-width="1"/>
+    <text x="124" y="118" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" fill="#b45309">vLLM: waiting = 4 · забита</text>
+    <rect x="50" y="106" width="64" height="17" rx="3" fill="#ef4444"/>
+    <text x="82" y="118" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9" fill="#ffffff" text-anchor="middle" letter-spacing="0.05em">EJECTED</text>
+    <rect x="56" y="126" width="800" height="12" rx="3" fill="#e5e7eb" opacity="0.6"/>
+
+    <!-- R3: холодная — новые сессии сюда -->
+    <g>
+      <rect x="122.7" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="322.7" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="522.7" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="722.7" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <text x="130" y="184" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#ffffff">new session</text>
+    </g>
+    <rect x="50" y="172" width="52" height="17" rx="3" fill="#3b82f6"/>
+    <text x="76" y="184" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9" fill="#ffffff" text-anchor="middle" letter-spacing="0.05em">COLD</text>
+    <g fill="#10b981" opacity="0.5">
+      <rect x="122.7" y="192" width="100" height="12" rx="2"/>
+      <rect x="322.7" y="192" width="100" height="12" rx="2"/>
+      <rect x="522.7" y="192" width="100" height="12" rx="2"/>
+      <rect x="722.7" y="192" width="100" height="12" rx="2"/>
+    </g>
+
+    <!-- time ticks -->
+    <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#898989" text-anchor="middle">
+      <text x="56" y="238">0 s</text>
+      <text x="189.3" y="238">2 s</text>
+      <text x="322.7" y="238">4 s</text>
+      <text x="456" y="238">6 s</text>
+      <text x="589.3" y="238">8 s</text>
+      <text x="722.7" y="238">10 s</text>
+      <text x="856" y="238">12 s</text>
+    </g>
+
+    <!-- annotations -->
+    <circle cx="33" cy="254" r="4" fill="#10b981"/>
+    <text x="44" y="258" font-size="12" fill="#374151">sticky: следующий ход сессии — на реплику с тёплым кэшем: TTFT 350 → 80 мс (4.4×)</text>
+    <circle cx="33" cy="276" r="4" fill="#ef4444"/>
+    <text x="44" y="280" font-size="12" fill="#374151">забитая vLLM-реплика (waiting &gt; 0) — вне роутинга: запросы на неё не отправляются</text>
+    <circle cx="33" cy="298" r="4" fill="#3b82f6"/>
+    <text x="44" y="302" font-size="12" fill="#374151">новая сессия — на холодную реплику: не в чужую очередь, не на самую загрузку</text>
+  </g>
+</svg>

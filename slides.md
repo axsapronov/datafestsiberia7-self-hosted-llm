@@ -37,6 +37,8 @@ fonts:
   <img class="cover-proof-chart" src="/img/tokens-chart.svg" alt="Total tokens per day — пик 2026-09-01, 1 043 495 767 токенов">
 </div>
 
+<div class="draft-stamp">Черновик</div>
+
 <!--
 Приветствие, представление, 1-2 минуты.
 -->
@@ -207,6 +209,103 @@ tool use на уровне Claude Code, и стабильные (не «иног
 -->
 
 ---
+title: Какую модель взять?
+hideInToc: true
+---
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+# Какую модель взять?
+
+<ModelMatrix />
+
+<div class="hook-line">Мой опыт ≤ 35B модели; 100B+ — только эксперименты</div>
+
+<!--
+Матрица: размерный класс → класс задач. Принцип: одна задача = одна модель в своём
+размерном классе. Consumer-железо (RTX 3090/4090, 24–48 GB VRAM) — работаем с моделями
+до 35B. Крупные (100B+) — только эксперименты.
+
+≤ 3B — документы, аудио, спецзадачи (узкие, быстрые, дешёвые):
+- JetBrains/Mellum-4b-sft-python (4B) — автодополнение кода (Python): обучена на 4T токенов,
+  контекст 8K, ultra-low latency в IDE.
+- MinerU 2.5 (1.2B) — end-to-end PDF/DOCX → Markdown/JSON: таблицы, формулы, reading order,
+  11/12 в бенчмарке парсеров 2026 (MinerU vs Docling vs PaddleOCR-VL).
+- PaddleOCR-VL (0.9B) — VLM OCR: 96.33 OmniDocBench v1.6 (лидер 2026), 109 языков,
+  Apache-2.0, ~2 GB VRAM — OCR живёт на одной GPU с LLM.
+- DeepSeek-OCR (~3B MoE, ~570M active) — batch OCR: MIT, MoE-роутинг даёт лучший
+  cost per page для больших партий документов.
+- bond005/whisper-podlodka-turbo (~800M, Whisper-large-v3-turbo) — ASR (русский):
+  файнтюн под русскую речь, убирает ложные срабатывания на шумы.
+Ключевой принцип: каждая спецзадача — своя маленькая модель. Не тащим 27B для OCR.
+
+≤ 8B — RAG, поиск:
+- BAAI/bge-m3 (568M) — hybrid retrieval: dense + sparse + ColBERT multi-vector в одном
+  forward pass — три ступени пайплайна (семантика, лексика, late-interaction reranking)
+  одной моделью, 8K контекст, 100+ языков, MIT.
+- Qwen/Qwen3-Embedding (0.6B/4B/8B) — server-grade embedding: 32K контекст, MRL
+  (Matryoshka — урезание dims без переобучения), instruction-aware, Apache-2.0;
+  8B — No.1 MTEB multilingual (70.58) и MTEB-Code 80.68 (выше Gemini-Embedding).
+- Qwen/Qwen3-Reranker-4B (4B) — reranking: cross-encoder, 32K контекст, Apache-2.0,
+  MTEB-Code 81.2.
+- TryDotAtwo/ruBERT-ruLaw (~110M) — юридический RAG (русский): pre-trained на законах,
+  sliding window 128, MLU-тест на судебных решениях.
+Ключевой принцип: RAG-пайплайн = embedding + reranker + LLM для генерации —
+каждый компонент в своём размерном классе.
+
+≤ 15B — рефакторинг, базовый SDLC:
+- JetBrains/Mellum2-12B-A2.5B-Instruct (12B total / 2.5B active, MoE) — оркестрация задач,
+  выполнение команд: 64 experts, 8 active per token, SWA + full attention, GGUF Q8_0.
+- unsloth/Devstral-Small-2-24B-Instruct-2512 (24B, на границе) — agentic coding,
+  refactoring: Mistral, Q5_K_M/Q6_K на 24 GB, OpenHands-ready.
+- DeepSeek Coder V2 Lite (16B total / 2.4B active, MoE) — repo-level рефакторинг:
+  MIT, сильна в fill-in-the-middle и multi-file задачах.
+Ключевой принцип: MoE (12B/2.5B, 16B/2.4B) даёт качество dense-класса при скорости
+inference в разы выше — «серебряная середина» для рефакторинга.
+
+≤ 35B — проектирование и реализация:
+- shawnw3i/Qwen3.8-27B-AWQ-MTP (27B dense) — агентский кодинг, multi-step. ← НАШ ВЫБОР.
+- t-tech/T-pro-it-2.1 (32B, на базе Qwen3) — RU RAG и чат: превосходит Qwen3-32B в tool
+  calling (ruBFCL 66.0 vs 57.3, enBFCL 72.3 vs 69.2), 32K контекст, Apache-2.0,
+  EAGLE speculative decoding.
+
+Почему по итогу Qwen3.8-27B — для агентского кодинга:
+- Dense 27B с гибридной архитектурой: Gated DeltaNet (linear attention) на 48 из 64 слоёв
+  + Gated Attention.
+- MTP (Multi-Token Prediction) — встроенный speculative decoding head, ~2× ускорение decode
+  (измерено: 76 → 176 tok/s с MTP, KGP Talkie).
+- 262K нативный контекст (расширяется до 1M через YaRN).
+- Vision tower — мультимодальность из коробки. Apache-2.0 — полная свобода для self-hosted.
+Бенчмарки (Qwen3.6-27B → Qwen3.8-27B):
+- Terminal-Bench 2.1: 63.4 → 73.0 (+9.6)
+- DeepSWE: 13.3 → 42.2 (+28.9)
+- SWE-bench Pro: 53.5 → 61.7 (+8.2)
+- QwenSWEBench: 49.3 → 79.0 (+29.7)
+- LiveCodeBench v6: 83.9 → 90.3 (+6.4)
+Уровень Claude Opus 4.6/4.7 по agentic coding (15/19 общих тестов) — на consumer-железе
+(archeon.io, 2026-08-20).
+
+Почему не другие 35B для кодинга:
+- T-pro-it-2.1 (32B) — лучшая RU-модель для RAG и чата, но по agentic coding
+  бенчмарки Qwen3.8 сильнее (Terminal-Bench 73.0, DeepSWE 42.2).
+- Qwen3-Coder-32B (32B) — HumanEval ~88.4, хороший coder, но без MTP, 262K контекста
+  и vision.
+- Devstral-Small-2-24B — хороший coder, но нет MTP, нет 256K контекста, Mistral license.
+- Qwen3.6-27B (предшественник) — −9.6 Terminal-Bench, −28.9 DeepSWE — поколение назад.
+
+Почему именно AWQ-MTP квант:
+- W4A16 AWQ — 4-bit weights, 16-bit activations: ~16 GB весов + KV cache.
+- MTP head сохранён в квантизации → speculative decoding работает.
+- 2× RTX 3090 (48 GB) — комфортно: 16 GB weights + до ~32 GB KV cache (256K контекст).
+- vLLM 0.27+ — нативная поддержка MTP speculative decoding:
+  --tensor-parallel-size 2 --max-model-len 262144
+  --speculative-config '{"method":"mtp","num_speculative_tokens":1}'
+  --max-num-seqs 2 --mamba-cache-mode align --disable-async-scheduling, OMP_NUM_THREADS=1
+
+Переход к следующему слайду: модель выбрана — чем её запускать?
+-->
+
+---
 title: Чем запустить LLM модель?
 hideInToc: true
 ---
@@ -279,7 +378,7 @@ title: Начинаем — запуск первой модели, ollama
 class: stepper-slide
 ---
 
-# Начинаем — запуск первой модели, ollama
+# Запуск первой модели, ollama
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
@@ -305,13 +404,13 @@ class: stepper-slide
 -->
 
 ---
-title: Итого — шумит, тормозит, тупит
+title: Не получилось — шумит, тормозит, тупит
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Итого — шумит, тормозит, тупит
+# Не получилось — шумит, тормозит, тупит
 
 <StageProblems stage="s1" />
 
@@ -369,21 +468,22 @@ hideInToc: true
 GPUStack — open-source GPU-кластер-менеджер: AI gateway для self-hosted кластера.
 Одна панель: деплой моделей, воркеры, API-ключи, статистика использования.
 
-Слайд — 2 колонки. Слева 4 возможности панели, каждая со своей мини-визуализацией:
-- Модели: скачивание с Hugging Face / ModelScope / локального пути, replicas N,
-  auto-restart при ошибке (exponential backoff, до 5 минут) → пилюля «Running · 1/1».
-- Движки: подключаемые — vLLM, SGLang, TensorRT-LLM, MindIE + custom → чипы рантаймов.
+Слайд — 2×2 сетка из 4 карточек. Каждая карточка — «полное» окно страницы
+реального UI (кропы без внутренних обрезаний, public/img/gpustack/gpustack-*.png,
+object-fit: contain на белой карточке — ничего не подрезается) с подписью-
+возможностью поверх (точка-цвет + название + строка описания):
+- Модели (зелёная) — Catalog: сетка моделей (Qwen, Kimi, MiniMax, GLM, Gemma, Nemotron).
+  Скачивание с Hugging Face / ModelScope / локального пути, replicas N,
+  auto-restart при ошибке (exponential backoff, до 5 минут).
+- Движки (фиолетовая) — Deployments: qwen3.5-0.8b, реплики 1/1, статус Running.
+  Подключаемые inference-рантаймы: vLLM, SGLang, TensorRT-LLM, MindIE + custom.
   В нашем стеке: llama.cpp (этап 2), vLLM (этап 3).
-- API: OpenAI-совместимый /v1/chat/completions; API-ключи: доступ по моделям,
-  срок действия, SSO → код-чип endpoint + Bearer.
-- Статистика: токены и запросы по пользователям и API-ключам (Usage & Billing) →
-  метрика 343 tok/s. Это ответ на ожидание «статистика и управление доступами».
-
-Справа 2×2: 3 скриншота реального UI + Usage-график.
-- Каталог — выбор модели из каталога (Qwen, GLM, Gemma, Nemotron…).
-- Deployments — Running, реплики 1/1 (0.8B-модель из каталога — демо; у нас — 27B AWQ на 2×3090).
-- Chat — playground: ответ + Token Usage 62 + Output 343.28 Tokens/s.
-- Usage & Billing — мини-график «кто сколько сжёг» (токены по пользователям).
+- API (оранжевая) — Chat: диалог + панель параметров. OpenAI-совместимый
+  /v1/chat/completions; API-ключи: доступ по моделям, срок действия, SSO.
+- Статистика (голубая) — Token Usage 62, Output 343.28 Tokens/s. Токены и запросы
+  по пользователям и API-ключам (Usage & Billing). Ответ на ожидание
+  «статистика и управление доступами».
+0.8B-модель в скриншотах — демо из каталога; у нас — 27B AWQ на 2×3090.
 Наш стек на этом этапе: 2 сервера (3060 + 4070 Ti) под Proxmox, GPUStack + llama.cpp.
 Источники: docs.gpustack.ai — Overview, Model Deployment Management,
 API Key Management, Model Route Management, Usage.
@@ -406,7 +506,7 @@ class: stepper-slide
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Продолжаем — Proxmox, GPUStack, llama.cpp
+# Proxmox, GPUStack, llama.cpp
 
 <Stepper
   :steps="[
@@ -430,13 +530,13 @@ llama.cpp — рантайм: контекст под задачу, модель
 -->
 
 ---
-title: Итого — для 1 отдела хватит
+title: Почти получилось — для 1 отдела хватит
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Итого — для 1 отдела хватит
+# Почти получилось — для 1 отдела хватит
 
 <StageProblems stage="s2" />
 
@@ -541,6 +641,8 @@ hideInToc: true
 
 <EngineTuning />
 
+<SlideLink href="https://gist.github.com/axsapronov/a01b198b0e108cc91f11b18d549b4bec" label="конфиг для qwen3.8-27b" />
+
 <div class="hook-line">Один параметр за раз — иначе не поймёшь, что именно дало эффект</div>
 
 <!--
@@ -562,7 +664,11 @@ TPOT/ITL (задержка на токен в декодинге), throughput (t
 6. Prefix-heavy workload (агенты, RAG с общим system prompt) → SGLang +
    RadixAttention или vLLM prefix caching — до 6x на общих префиксах.
 7. Валидация: бенчмарк при целевой concurrency (не пик), затем 24–72h
-   load-test и мониторинг — конфигурация фиксируется в документацию.
+    load-test и мониторинг — конфигурация фиксируется в документацию.
+
+Ссылка справа — мой конфиг (gist): реальный `.env` + `vllm serve` для
+Qwen3.8-27B-AWQ-MTP на 2×3090 (TP=2, MTP, 256K, KV fp8, chunked prefill).
+Упомянуть: «конфиг — справа, посмотрите, что реально крутится».
 
 Источники:
 - Sector88 — How to fix vLLM OOM: 2026 checklist (sector88.co/blog/how-to-fix-vllm-oom)
@@ -578,36 +684,69 @@ TPOT/ITL (задержка на токен в декодинге), throughput (t
 -->
 
 ---
-title: Балансировка LLM трафика
+title: Особенности LLM трафика
 hideInToc: true
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Почему Round Robin не работает для LLM
+# Особенности LLM трафика
 
-- **Запросы не однотипные**: chat — 10–20 с, агент — 1–3 мин (input 100k, output 5k) — в 100–10 000× дольше web-запроса
-- **Стоимость ∝ токенам**: prefill + decode держат слот минуты, а Round Robin об этом не знает
-- **KV-кэш на ноде**: диалог и общий system prompt должны оставаться на одной ноде — иначе каждый тур переплачивает prefill
+- **Запросы не однотипные**: web ~50 мс · LLM 10 с – 10+ мин · агент ~1 мин
+- **Стоимость ∝ токенам**: prefill + decode; 32K prompt ≈ 2.5 GB KV, слот — минуты
+- **Кэш — состояние на ноде**: поток запросов вытесняет KV-кэш → пересчёт prefill
+- **Bursty**: агент — 3–10 параллельных запросов на человека, а не 1
 
-<img class="data-chart" src="/img/lb-round-robin.svg" alt="6 запросов на 3 репликах за 12 секунд: Round Robin — длинный запрос R1 (8 с) на ноде A, следующий по кругу запрос R4 ждёт в очереди 2 с, B и C простаивают; least-loaded — те же запросы распределяются по текущей загрузке, очереди нет">
+<img class="data-chart" style="max-width:800px; margin:0.5rem auto 0;" src="/img/lb-llm-traffic.svg" alt="3 реплики за 12 секунд: R1 — на реплику прилетел большой запрос (100k prefill + decode, 8 с) и она долго думает, слот занят весь отрезок, кэш сессии живёт; R2 и R3 — прилетает поток коротких запросов, KV-кэш протухает между ними, следующий ход сессии пересчитывает prefill">
 
-<div class="hook-line">Round Robin равномерно распределяет запросы — но LLM-запросы не равномерны. Мы распределяем нагрузку</div>
+<div class="hook-line">Одна реплика «думает» минуты, на других кэш протухает — балансировать надо нагрузку и кэш, а не число запросов</div>
 
 <!--
-Контраст: web-запрос vs LLM-запрос.
-- Web-запрос: ~50 мс, однородные → Round Robin хорош: запросы равны, делить поровну можно.
-- LLM-запрос: 10 с — 10+ минут. Стоимость ∝ токенам: prefill (input, compute-bound) + decode (output, memory-bound).
-  Агентский запрос: input 100k токенов (prefill — секунды) + output 5k токенов ≈ 1 мин при 80 tok/s.
-- Почему RR ломается: RR распределяет «запросы», а не «нагрузку». Длинный запрос (R1) занимает слот 8 с,
-  следующий по кругу (R4) падает на ту же ноду → очередь. Остальные ноды простаивают.
-  Пользователь на «горячей» ноде видит просадку, остальные — пустоту.
-- KV-кэш: multi-turn диалог каждый тур пересылает всю историю. Та же нода → cache hit,
-  prefill в 5–10× быстрее; другая нода — пересчёт всего контекста. Общий system prompt (агенты) — то же.
-- Схема на слайде условная: 6 запросов, 3 реплики, 12 с. R1 — «тяжёлый» (100k prefill + decode, 8 с),
-  остальные — 1.5 с. Сверху — RR (по кругу). Снизу — least-loaded: каждый запрос — на наименее
-  загруженную; ничья — round-robin среди минимальных.
-- Переход: нагрузка — только половина дела. Вторая половина — KV-кэш (sticky) и health.
+3 реплики, 12 секунд — что видит балансер (схема условная):
+
+R1: на реплику прилетает большой запрос (100k prefill + decode) — она «долго думает»:
+8 секунд, слот занят весь отрезок. Кэш сессии живёт — вытеснять его нечем.
+R2/R3: прилетает поток коротких запросов (1.5 с; агенты — 3–10 параллельных на человека).
+Поток разных запросов вытесняет KV/prefix-кэш: он протухает между запросами,
+и следующий ход сессии пересчитывает prefill заново.
+
+Четыре особенности, которые ломают классическую балансировку (для речи):
+
+1. Неоднородные запросы (длительность 100× — 100 000×):
+   - Web-запрос: ~50 мс, однородные → Round Robin хорош: запросы равны, делить поровну можно.
+   - LLM: 200 мс (короткое completion) — 30+ с (длинная генерация), агент — 1–3 мин
+     (input 100k prefill + output 5k ≈ 1 мин при 80 tok/s).
+   - Источники: Neel Mishra «Load Balancing for LLM Services» (request duration varies 100×),
+     BentoML LLM Inference Handbook.
+
+2. Стоимость ∝ токенам (разброс ~50×):
+   - 128-token prompt → ~10 MB KV-кэша; 32K-token prompt → ~2.5 GB.
+   - Prefill — compute-bound (GPU насыщен), decode — memory-bandwidth-bound (пропускная память).
+   - Реплика с 10 запросами в decode имеет принципиально другую ёмкость, чем с 10 в prefill.
+   - «Fairness by request count is not fairness by cost» (NVIDIA Dynamo / Ace The Cloud, 2026).
+
+3. Состояние на ноде (KV-кэш):
+   - Multi-turn: 10-туровый диалог с 8K контекстом — sticky экономит 70–90% prefill-вычислений
+     на турах 2+ (Neel Mishra, session affinity).
+   - RAG / общий system prompt (2048 токенов, 85% cache hit rate) — TTFT 350 мс → 80 мс (4.4×),
+     GPU-вычисления −40% (Neel Mishra, prefix locality).
+   - Tool-use агенты — cache hit rate 90%+, экономия prefill 50–70%.
+   - «From the load balancer's point of view both paths are 'one request.' From the GPU's point of
+     view those paths are not even cousins» (Ace The Cloud).
+
+4. Bursty: агенты (pi.dev, Cursor, Kilo) создают 3–10 параллельных запросов на человека, а не 1.
+
+Почему это ломает Round Robin (для речи):
+- RR распределяет число запросов, а не стоимость. Длинный запрос занимает слот на минуты,
+  следующий по кругу падает на ту же ноду → очередь, пока другие простаивают.
+- Кэш протухает под потоком коротких запросов → следующий ход сессии пересчитывает prefill.
+- Цифры: token-weighted shortest-queue — P99 TTFT 4200 → 650 мс (6.5× лучше RR);
+  llm-d (Tesla production) — до 3× throughput и TTFT в 2 раза ниже против RR (cache-aware routing).
+- Индустрия сходится к одним и тем же сигналам: llm-d (scoring: cache + prefill/decode + SLA + load),
+  NVIDIA Dynamo (worker-reported KV-состояние), SGLang (router-predicted radix tree),
+  Gateway API Inference Extension (KV cache % + queue + LoRA).
+
+Переход: нагрузка — только половина дела. Вторая половина — KV-кэш (sticky) и health — на следующем слайде.
 -->
 
 ---
@@ -617,21 +756,45 @@ hideInToc: true
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Свой балансер: load · sticky · health
+# Балансировка LLM трафика
 
-| Сигнал | Источник | Правило |
-|---|---|---|
-| **Load** | vLLM `/metrics` (3 с) + in-flight WLC | сначала без очереди, затем least-loaded |
-| **Session** | header `x-session-id` | pin: TTL 60 мин, rebind после 3 spill |
-| **Prefix** | MD5(system prompt) | pin: TTL 5 мин, отпускается при перегрузе |
-| **Health** | scrape + 5xx | LIVE ⇄ PROBING ⇄ EJECTED, активный probe |
+- **Sticky**: сессия привязана к реплике с тёплым кэшем — TTFT 350 → 80 мс (4.4×)
+- **Load**: забитая vLLM-реплика (waiting > 0) — вне роутинга
+- **Cold start**: новая сессия — на холодную реплику, не в чужую очередь
 
-<img class="data-chart" src="/img/lb-balancer.svg" alt="Пайплайн выбора реплики: пул LIVE ∪ PROBING → no-wait (waiting = 0) → least-loaded (min running) → pin (session → prefix) → affinity или load; health-машина: EJECTED → 2× scrape OK → PROBING → 15 s clean → LIVE, eject при 5xx burst / stuck 45 s / scrape fail ×2; EJECTED без user traffic, scrape продолжается">
+<img class="data-chart" style="max-width:800px; margin:0.5rem auto 0;" src="/img/lb-routing-decisions.svg" alt="3 реплики, балансер в деле: R1 — сессия привязана к реплике с тёплым кэшем (cache hit, TTFT 350→80 мс); R2 — vLLM забита (waiting=4), исключена из роутинга (EJECTED), запросы на неё не отправляются; R3 — холодная, сюда уходят новые сессии">
 
-<div class="hook-line">Мягкий sticky: KV-кэш работает, а трафик не кристаллизуется на одной ноде</div>
+<div class="hook-line">Балансер роутит по кэшу и нагрузке: сессия — на тёплую, новую — на холодную, забитую — из роутинга</div>
 
 <!--
+Продолжение прошлого канваса: те же 3 реплики, теперь в деле балансер — три решения (схема):
+
+1. STICKY (R1): сессия привязана к реплике, где её кэш тёплый. Следующий ход — туда:
+   cache hit, TTFT 350 → 80 мс (4.4×), prefill −40% GPU (Neel Mishra, prefix locality).
+   Мягкий affinity: pin держится со slack (session 1, prefix 0), rebind после 3 spill,
+   TTL 60 мин — трафик не кристаллизуется на одной ноде.
+2. LOAD (R2): vLLM забита (waiting = 4) — реплика вне роутинга: no-wait (waiting > 0 → не берём),
+   EJECTED при 5xx / stuck / scrape fail, возврат через PROBING без user traffic.
+   Запросы, которые «долетели бы» на R2, уходят на свободные.
+3. COLD (R3): новая сессия — на холодную реплику: least-loaded (min effective_running,
+   WLC: 100k запрос весит в 100× больше 1k), не в чужую очередь.
+
+Таблица сигналов (шпаргалка):
+| Сигнал | Источник | Правило |
+|---|---|---|
+| Load | vLLM /metrics (3 с) + in-flight WLC | сначала без очереди, затем least-loaded |
+| Session | header x-session-id | pin: TTL 60 мин, rebind после 3 spill |
+| Prefix | MD5(system prompt) | pin: TTL 5 мин, отпускается при перегрузе |
+| Health | scrape + 5xx | LIVE ⇄ PROBING ⇄ EJECTED, активный probe |
+
 Три сигнала: load, sticky, health. Принципы: routing простой, health не зависит от user traffic.
+Набор сигналов совпадает с индустриальной практикой — колесо не изобретали, дорабатывали под
+2×3090 + агентов:
+- llm-d (Inference Scheduler): scoring = cache + prefill/decode + SLA + load
+- NVIDIA Dynamo: worker-reported KV-состояние + load (KV-aware routing)
+- SGLang: router-predicted radix tree (приближённый prefix-кэш) + load
+- Gateway API Inference Extension (EPP): KV cache % + queue depth + LoRA-адаптер
+«load + prefix/KV-locality + health» — де-факто стандарт 2026.
 
 1. LOAD — scrape vLLM /metrics каждые 3 с (num_running, num_waiting, KV usage) + локальный in-flight (WLC):
    effective_running = max(scrape, in-flight); effective_waiting = waiting + max(0, in-flight − running).
@@ -640,6 +803,8 @@ hideInToc: true
    не сбрасывается idle-scrape'ом), backstop 15 мин на потерянные completion-сигналы.
    No-wait: если есть LIVE с waiting = 0 — берём только их. Least-loaded: min(effective_running),
    ничья — round-robin, LIVE предпочтительнее PROBING.
+   Цифры: token-weighted shortest-queue — P99 TTFT 4200 → 650 мс (6.5× лучше RR)
+   (Neel Mishra, Llama-2 70B, 6 реплик).
 
 2. STICKY (soft affinity) — KV-кэш работает, трафик не кристаллизуется:
    - Session key: из заголовков (x-session-id, x-kilo-session, x-claude-code-session-id, x-opencode-session,
@@ -650,6 +815,8 @@ hideInToc: true
    - Rebind: 3 spill подряд → session переезжает на новую ноду; force rebind: running(pin) − min ≥ 3 — сразу.
      Prefix: expunge при повторяющемся spill. TTL: 60 мин / 5 мин — чинит «через 10 минут всё на одной».
    - Новый bind только на LIVE; PROBING sticky не принимает.
+   - Индустрия: session affinity экономит 70–90% prefill на турах 2+ (10 туров, 8K контекст);
+     всегда с load-override — affinity ломают, когда KV > 90% (Neel Mishra).
 
 3. HEALTH — без user traffic:
    - EJECT: 2× failed scrape, 5xx > 30%/мин, stuck (num_running > 0 и in-flight = 0 дольше 45 с), state ≠ running.
@@ -657,6 +824,9 @@ hideInToc: true
      Cooldown: 30 с базовый, экспоненциально до 300 с при повторных eject (защита от flap).
    - EJECTED: user traffic нет, но /metrics скрейпится дальше — это единственный путь возврата.
      Мёртвую реплику «не проверяем» пользовательскими запросами.
+   - Индустрия: LLM-health нюанснее web — «alive» ≠ «ready» (модель не загружена) ≠ «overloaded»
+     (принимает, но с деградацией); Envoy idle_timeout 300 s (дефолт 60 s убивает streaming),
+     circuit breaker (max_pending_requests) защищает KV от OOM (Neel Mishra).
 
 Чего не делаем (осознанно): composite score, consistent hashing, Power of Two, температура GPU
 (лагging-сигнал; running/waiting — прямое измерение нагрузки), slow-start в routing — только в Grafana.
@@ -665,12 +835,22 @@ imbalance index + алерты (весь трафик на одной ноде, 
 -->
 
 ---
+layout: section
+hideInToc: true
+title: Что в итоге?
+---
+
+<SectionCard kicker="" title="Что в итоге?" tone="violet" />
+
+<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
+
+---
 title: Стабилизация — агенты, балансер, vllm
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
 
-# Стабилизация — агенты, балансер, vllm
+# AWQ, vLLM, балансер
 
 
 <Stepper
@@ -702,27 +882,11 @@ S3: скорость ~ (75 tok/s на пользователя, 210 aggregate), 
 объём ✓ (1 млрд/сутки пик), качество ~ (Qwen3.8: TB 73, DeepSWE 42.2 — не ≥ Claude, но для своих задач хватает),
 API ✓ (vLLM OpenAI-совместимый), управление ✓ (GPUStack счётчики).
 Особенности этапа (3 карточки):
-1. MTP crash — vLLM 0.27.1: wild write, рантайм умер на 3-й день — лечится 0.28.0.
-2. Нет FP8 — Ampere: квант — AWQ (INT4), а не FP8.
-3. 24GB — потолок — max-num-seqs 2: 256K + 27B весов, параллельность 8 → 2 запроса.
-TODO(спикер): подтвердить черновик (75 tok/s, 1 млрд/сутки, Qwen3.8, MTP crash, max-num-seqs 2).
--->
-
----
-
-# Заключение
-
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
-- **1 млрд токенов в сутки — это не про железо.** Это про то, что я перестал быть пользователем API и стал оператором инфраструктуры
-
-
-
-<div class="hook-line">Это не конец, а checkpoint.</div>
-
-<!--
-Финал: 24/7, без лимитов, без счетов, без зависимости от чужого uptime — и это стоит $3,200/год,
-а не $20–73K. Roadmap: Qwen4 (3090 не потянет — нужен 4090/H100), RAG-сервис, AI Gateway.
+1. MTP — стабилен — vLLM 0.28.0: wild write в 0.27.1 убивал рантайм на 3-й день;
+   после апгрейда — MTP работает, ~2× decode (KGP Talkie: 76 → 176 tok/s).
+2. Нет FP8 — Ampere: 27B весов — в AWQ INT4 (W4A16), единственный 4-bit квант для 3090.
+3. 24GB — потолок — max-num-seqs 2: 256K + 27B весов, KV съедает бюджет, параллельность 8 → 2 запроса.
+TODO(спикер): подтвердить цифры (75 tok/s, 1 млрд/сутки, Qwen3.8, max-num-seqs 2).
 -->
 
 ---
@@ -730,20 +894,23 @@ layout: center-dark
 hideInToc: true
 ---
 
-<div class="thanks">
-  <h1 class="thanks-title">Спасибо!</h1>
-  <div class="thanks-sub">Вопросы?</div>
-
-  <div class="thanks-contact">
-    <div class="thanks-name">Александр Сапронов</div>
-    <div class="thanks-links"><a href="mailto:a@sapronov.me">a@sapronov.me</a> · <a href="https://t.me/axsapronov">t.me/axsapronov</a></div>
+<div class="final-grid">
+  <div class="final-left">
+    <h1 class="thanks-title">Спасибо!</h1>
+    <div class="thanks-sub">Вопросы?</div>
+    <p class="final-takeaway"><strong>1 млрд токенов в сутки — это не про железо.</strong> Это про то, что я перестал быть пользователем API и стал оператором инфраструктуры</p>
   </div>
-
-  <QrCode url="https://github.com/axsapronov/datafestsiberia7-self-hosted-llm" :size="124" caption="Ссылка на слайды" />
+  <div class="final-right">
+    <div class="thanks-contact">
+      <div class="thanks-name">Александр Сапронов</div>
+      <div class="thanks-links"><a href="mailto:a@sapronov.me">a@sapronov.me</a> · <a href="https://t.me/axsapronov">t.me/axsapronov</a></div>
+    </div>
+    <QrCode url="https://github.com/axsapronov/datafestsiberia7-self-hosted-llm/blob/main/slides-export.pdf" :size="124" caption="Ссылка на слайды" />
+  </div>
 </div>
 
-<div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>
-
 <!--
-Финал: Q&A, ссылки, контакты.
+Финал: 24/7, без лимитов, без счетов, без зависимости от чужого uptime — и это стоит $3,200/год,
+а не $20–73K. Roadmap: Qwen4 (3090 не потянет — нужен 4090/H100), RAG-сервис, AI Gateway.
+Q&A, ссылки, контакты.
 -->

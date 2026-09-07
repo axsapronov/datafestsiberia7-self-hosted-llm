@@ -96,12 +96,12 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
       { num: '02', title: 'Заменить llama.cpp на vLLM', text: 'Движок адаптирован под production нагрузку' },
       { num: '03', title: 'Подобрать версию модели под железо', text: 'Изучить виды квантизации, особенности алгоритмов' },
       { num: '04', title: 'Настроить контроль температура-мощность', text: 'Написать демона, который сам будет следить за перегревом' },
-      { num: '05', title: 'Написать свой балансировщик', text: 'sticky session + prefix-aware', },
+      { num: '05', title: 'Запустить балансировщик LLM трафика', text: 'sticky session + prefix-aware (vllm router или свой балансер)', },
       { num: '06', title: 'Встроить ИИ в рабочий процесс', text: 'CI review, SDLC, RAG',},
     ],
   },
   s3: {
-    name: '8×3090 + vLLM + GPUStack',
+    name: '4x(2×3090) + vLLM + GPUStack',
     problems: [
       { param: 'speed', actual: '80-100 ток/сек на пользователя', status: 'ok' },
       { param: 'context', actual: '256K (262144)', status: 'ok' },
@@ -111,17 +111,11 @@ export const STAGES: Record<'s1' | 's2' | 's3', StageData> = {
       { param: 'manage', actual: 'GPUStack: счётчики по пользователям и API-ключам', status: 'ok' },
     ],
     features: [
-      { title: 'MTP crash', value: 'vLLM 0.27.1', text: 'wild write, рантайм умер на 3-й день — лечится 0.28.0' },
-      { title: 'Нет FP8', value: 'Ampere', text: 'квант — AWQ (INT4), а не FP8' },
-      { title: '24GB — потолок', value: 'max-num-seqs 2', text: '256K + 27B весов: параллельность 8 → 2 запроса' },
+      { title: '10 сотрудников работают', value: '', text: 'Каждый может в 3 потока кодить' },
+      { title: '<74°С температура видеокарт', value: '', text: 'При допустимой в 93°С' },
+      { title: 'ИИ встроен везде', value: '', text: 'Агенты, Chat, RAG, DeerFlow, Dify...' },
     ],
     ideas: [
-      { num: '01', title: 'MTP: 3 спекулятивных токена', text: '18 → 45 tok/s (×2.5) на 3090', params: ['speed'] },
-      { num: '02', title: '256K контекст', text: '--max-model-len 262144, KV-cache ~18GB', params: ['context'] },
-      { num: '03', title: 'OMP_NUM_THREADS=1, без async scheduling', text: 'TTFT 4.2s → 1.8s', params: ['speed'] },
-      { num: '04', title: 'vLLM 0.28.0', text: 'фикс MTP crash — стабильность 24/7', feature: 'особенность · надёжность' },
-
-      { num: '06', title: 'мониторинг с первого дня', text: 'Prometheus + Grafana + GPUStack: алерты, а не логи', params: ['manage'] },
     ],
   },
 }

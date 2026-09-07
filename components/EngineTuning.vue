@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Тюнинг inference-движка: универсальный алгоритм (6 шагов) + 4 группы
+// Тюнинг inference-движка: алгоритм (4 шага) + 4 группы
 // параметров (справочник по движкам). Палитра групп — badge pastels системы.
 
 interface Step {
@@ -10,12 +10,10 @@ interface Step {
 }
 
 const STEPS: Step[] = [
-  { num: '01', title: 'Workload', sub: 'тип · контекст · concurrency · SLA' },
-  { num: '02', title: 'Базовый конфиг', sub: 'модель + квант · TP/PP · mem-util' },
-  { num: '03', title: 'Измерить', sub: 'TTFT · TPOT · throughput · VRAM' },
-  { num: '04', title: 'Итерация', sub: 'одна группа за раз', hub: true },
-  { num: '05', title: 'Проверка', sub: 'лучше? нет OOM?' },
-  { num: '06', title: 'Стабилизация', sub: 'load-test 24–72h · мониторинг' },
+  { num: '01', title: 'Сформулировать задачу', sub: 'тип · контекст · concurrency · SLA' },
+  { num: '02', title: 'Бэкап конфига', sub: 'зафиксировать базовый конфиг' },
+  { num: '03', title: 'Поменять параметр', sub: 'одна группа за раз', hub: true },
+  { num: '04', title: 'Проверка и стабилизация', sub: 'TTFT · TPOT · OOM · load-test 24–72h' },
 ]
 
 interface Group {
@@ -23,7 +21,6 @@ interface Group {
   name: string
   color: string
   vllm: string
-  sglang: string
   llama: string
 }
 
@@ -33,15 +30,13 @@ const GROUPS: Group[] = [
     name: 'Память / KV-cache',
     color: 'var(--badge-emerald)',
     vllm: 'gpu-memory-utilization 0.85–0.92 · max-model-len',
-    sglang: 'mem-fraction-static 0.85–0.92 · context-length',
-    llama: 'n_ctx · n_gpu_layers · GGUF-квант',
+    llama: 'n_ctx · n_gpu_layers',
   },
   {
     letter: 'B',
     name: 'Batching / scheduler',
     color: 'var(--accent)',
-    vllm: 'max-num-seqs · max-num-batched-tokens 2048–8192 · chunked-prefill',
-    sglang: 'max-running-requests · chunked-prefill-size · schedule-policy',
+    vllm: 'max-num-seqs · max-num-batched-tokens 4096–16384 · chunked-prefill',
     llama: 'n_batch · threads = физ. ядра',
   },
   {
@@ -49,7 +44,6 @@ const GROUPS: Group[] = [
     name: 'Ускорения',
     color: 'var(--badge-violet)',
     vllm: 'speculative decoding (MTP/EAGLE) · flash attn · prefix caching',
-    sglang: 'RadixAttention (prefix cache) · xGrammar',
     llama: 'flash attention · MTP draft-tokens',
   },
   {
@@ -57,7 +51,6 @@ const GROUPS: Group[] = [
     name: 'Железо / топология',
     color: 'var(--badge-orange)',
     vllm: 'tensor-parallel-size · pipeline-parallel-size · OMP_NUM_THREADS',
-    sglang: 'tp · pp · dp (data parallel)',
     llama: 'n_gpu_layers (offload) · --threads',
   },
 ]
@@ -65,8 +58,31 @@ const GROUPS: Group[] = [
 
 <template>
   <div class="et">
-    <div class="num-cap et-cap">
-      Алгоритм: зафиксировать workload → базовый конфиг → измерить → крутить 4 группы → стабилизировать
+    
+
+    <div class="et-tablewrap">
+      <table class="et-table">
+        <thead>
+          <tr>
+            <th>Группа</th>
+            <th>vLLM</th>
+            <th>llama.cpp / Ollama</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="g in GROUPS" :key="g.letter">
+            <td>
+              <span class="et-group">
+                <span class="et-group-dot" :style="{ background: g.color }" aria-hidden="true"></span>
+                <span class="et-group-letter">{{ g.letter }}</span>
+                {{ g.name }}
+              </span>
+            </td>
+            <td class="et-params">{{ g.vllm }}</td>
+            <td class="et-params">{{ g.llama }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="et-flowwrap">
@@ -95,36 +111,9 @@ const GROUPS: Group[] = [
           <path d="M13 4l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         <span class="et-loop-line"></span>
-        <span class="et-loop-label">нет · OOM · деградация — назад к итерации (шаг 04)</span>
+        <span class="et-loop-label">нет · OOM · деградация — назад к шагу 03</span>
         <span class="et-loop-line"></span>
       </div>
-    </div>
-
-    <div class="et-tablewrap">
-      <table class="et-table">
-        <thead>
-          <tr>
-            <th>Группа</th>
-            <th>vLLM</th>
-            <th>SGLang</th>
-            <th>llama.cpp / Ollama</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="g in GROUPS" :key="g.letter">
-            <td>
-              <span class="et-group">
-                <span class="et-group-dot" :style="{ background: g.color }" aria-hidden="true"></span>
-                <span class="et-group-letter">{{ g.letter }}</span>
-                {{ g.name }}
-              </span>
-            </td>
-            <td class="et-params">{{ g.vllm }}</td>
-            <td class="et-params">{{ g.sglang }}</td>
-            <td class="et-params">{{ g.llama }}</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 </template>
@@ -141,6 +130,10 @@ const GROUPS: Group[] = [
 }
 
 /* ── Поток алгоритма ─────────────────────────────────────────────────── */
+.et-flowwrap {
+  margin-top: 1rem;
+}
+
 .et-flow {
   display: flex;
   align-items: stretch;
@@ -159,7 +152,7 @@ const GROUPS: Group[] = [
   padding: 0.5rem 0.55rem;
 }
 
-/* Шаг-хаб (итерация) — единственный акцентный surface в потоке */
+/* Шаг-хаб (смена параметра) — единственный акцентный surface в потоке */
 .et-step-hub {
   background: var(--canvas);
   border: 1.5px solid var(--accent);
@@ -216,7 +209,7 @@ const GROUPS: Group[] = [
   color: var(--muted-soft);
 }
 
-/* Возвратный цикл (деградация → назад к итерации) */
+/* Возвратный цикл (деградация → назад к смене параметра) */
 .et-loop {
   display: flex;
   align-items: center;
@@ -242,7 +235,6 @@ const GROUPS: Group[] = [
 .et-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
   font-size: 0.78rem;
 }
 

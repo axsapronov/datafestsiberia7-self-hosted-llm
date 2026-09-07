@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" role="img" aria-label="3 реплики за 12 секунд: R1 — на реплику прилетел большой запрос (100k prefill + decode, 8 с) и она долго думает, слот занят весь отрезок, кэш сессии живёт; R2 и R3 — прилетает поток коротких запросов, KV-кэш протухает между ними, следующий ход сессии пересчитывает prefill">
+  <defs>
+    <pattern id="hatch-amber" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="#f59e0b" opacity="0.14"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#f59e0b" stroke-width="2" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <g font-family="Inter, -apple-system, 'Segoe UI', sans-serif">
+
+    <!-- ── Панель · 3 реплики ─────────────────────────────────────────── -->
+    <rect x="8" y="6" width="864" height="294" rx="14" fill="#f5f5f5" stroke="#e5e7eb"/>
+    <text x="28" y="28" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="500" letter-spacing="0.08em" fill="#6b7280">3 РЕПЛИКИ · 12 СЕК · LLM-ТРАФИК</text>
+
+    <!-- grid -->
+    <g stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3 3" opacity="0.7">
+      <line x1="56" y1="36" x2="56" y2="226"/>
+      <line x1="189.3" y1="36" x2="189.3" y2="226"/>
+      <line x1="322.7" y1="36" x2="322.7" y2="226"/>
+      <line x1="456" y1="36" x2="456" y2="226"/>
+      <line x1="589.3" y1="36" x2="589.3" y2="226"/>
+      <line x1="722.7" y1="36" x2="722.7" y2="226"/>
+      <line x1="856" y1="36" x2="856" y2="226"/>
+    </g>
+
+    <!-- lane labels -->
+    <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" font-weight="600" fill="#111111">
+      <text x="28" y="53">R1</text>
+      <text x="28" y="119">R2</text>
+      <text x="28" y="185">R3</text>
+    </g>
+
+    <!-- R1: большой запрос «долго думает» -->
+    <rect x="56" y="42" width="533.3" height="14" rx="4" fill="#ec4899"/>
+    <text x="64" y="52" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" fill="#ffffff">100k prefill + decode · 8 s · «долго думает»</text>
+    <!-- R1: кэш сессии живёт — вытеснять нечем -->
+    <rect x="56" y="60" width="800" height="12" rx="3" fill="#10b981" opacity="0.5"/>
+    <text x="848" y="69" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#047857" text-anchor="end">кэш живёт</text>
+
+    <!-- R2: поток коротких запросов -->
+    <g>
+      <rect x="122.7" y="108" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="322.7" y="108" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="522.7" y="108" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="722.7" y="108" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <text x="130" y="118" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#ffffff">1.5 s</text>
+    </g>
+    <!-- R2: кэш — зелёный под запросом, протухает в промежутках -->
+    <g fill="#10b981" opacity="0.5">
+      <rect x="122.7" y="126" width="100" height="12" rx="2"/>
+      <rect x="322.7" y="126" width="100" height="12" rx="2"/>
+      <rect x="522.7" y="126" width="100" height="12" rx="2"/>
+      <rect x="722.7" y="126" width="100" height="12" rx="2"/>
+    </g>
+    <g fill="url(#hatch-amber)" stroke="#f59e0b" stroke-width="1">
+      <rect x="222.7" y="126" width="100" height="12" rx="2"/>
+      <rect x="422.7" y="126" width="100" height="12" rx="2"/>
+      <rect x="622.7" y="126" width="100" height="12" rx="2"/>
+    </g>
+    <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#b45309" text-anchor="middle">
+      <text x="272.7" y="135">протух</text>
+      <text x="472.7" y="135">протух</text>
+      <text x="672.7" y="135">протух</text>
+    </g>
+
+    <!-- R3: поток коротких запросов (со сдвигом) -->
+    <g>
+      <rect x="189.3" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="389.3" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="589.3" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
+      <rect x="789.3" y="174" width="66.7" height="14" rx="4" fill="#3b82f6"/>
+      <text x="197" y="184" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#ffffff">1.5 s</text>
+    </g>
+    <!-- R3: кэш -->
+    <g fill="#10b981" opacity="0.5">
+      <rect x="189.3" y="192" width="100" height="12" rx="2"/>
+      <rect x="389.3" y="192" width="100" height="12" rx="2"/>
+      <rect x="589.3" y="192" width="100" height="12" rx="2"/>
+      <rect x="789.3" y="192" width="66.7" height="12" rx="2"/>
+    </g>
+    <g fill="url(#hatch-amber)" stroke="#f59e0b" stroke-width="1">
+      <rect x="289.3" y="192" width="100" height="12" rx="2"/>
+      <rect x="489.3" y="192" width="100" height="12" rx="2"/>
+      <rect x="689.3" y="192" width="100" height="12" rx="2"/>
+    </g>
+    <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#b45309" text-anchor="middle">
+      <text x="339.3" y="201">протух</text>
+      <text x="539.3" y="201">протух</text>
+      <text x="739.3" y="201">протух</text>
+    </g>
+
+    <!-- time ticks -->
+    <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#898989" text-anchor="middle">
+      <text x="56" y="238">0 s</text>
+      <text x="189.3" y="238">2 s</text>
+      <text x="322.7" y="238">4 s</text>
+      <text x="456" y="238">6 s</text>
+      <text x="589.3" y="238">8 s</text>
+      <text x="722.7" y="238">10 s</text>
+      <text x="856" y="238">12 s</text>
+    </g>
+
+    <!-- annotations -->
+    <circle cx="33" cy="258" r="4" fill="#ec4899"/>
+    <text x="44" y="262" font-size="12" fill="#374151">R1: большой запрос «думает» 8 с — слот занят весь отрезок, кэш сессии живёт</text>
+    <circle cx="33" cy="280" r="4" fill="#f59e0b"/>
+    <text x="44" y="284" font-size="12" fill="#374151">R2/R3: поток коротких запросов — кэш протухает между ними, следующий ход сессии пересчитывает prefill</text>
+  </g>
+</svg>

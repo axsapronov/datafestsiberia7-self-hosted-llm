@@ -64,7 +64,9 @@
 }
 
 /* Холст слайда: белый фон + Stripe-style top-mesh (многоцветный градиент сверху,
-   перетекающий в холст к середине) */
+   перетекающий в холст к середине).
+   padding-top уменьшен (1rem vs базовые 2.5rem из py-10), чтобы заголовок был
+   ближе к верху и контента было больше; нижний padding (2.5rem) — без изменений. */
 .slidev-layout {
   position: relative;
   background: var(--slide-top-mesh), var(--canvas);
@@ -72,6 +74,7 @@
   font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.5;
+  padding-top: 1rem;
 }
 
 /* Обложка и центрированные слайды — тот же холст
@@ -362,6 +365,10 @@
 .slidev-layout.center-dark .slidev-slide-number {
   color: var(--muted-soft);
 }
+/* hook-line по умолчанию ink (чёрный) — на тёмной плитке не читается */
+.slidev-layout.center-dark .hook-line {
+  color: var(--on-dark);
+}
 
 /* Номер слайда: низ-справа, mono, fine-print */
 .slidev-slide-number {
@@ -431,6 +438,26 @@
   display: block;
   width: 380px;
   height: auto;
+}
+
+/* «Штамп» черновика на обложке: повёрнутый полупрозрачный штамп справа,
+   между лого (верх) и графиком (низ) — в пустой зоне правой половины */
+.draft-stamp {
+  position: absolute;
+  top: 36%;
+  right: 2.5rem;
+  transform: translateY(-50%) rotate(-8deg);
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(239, 68, 68, 0.8);
+  border: 3px solid rgba(239, 68, 68, 0.8);
+  border-radius: 10px;
+  padding: 0.45rem 1.1rem 0.45rem 1.28rem;
+  pointer-events: none;
+  user-select: none;
 }
 
 /* ── Слайд 2: план + о докладчике ───────────────────────────────────── */
@@ -573,4 +600,37 @@
 .slidev-layout .thanks-links a {
   color: var(--on-dark-soft);
   text-decoration: none;
+}
+
+/* ── Финальный слайд: две колонки (выводы + контакты) ───────────────────
+   На layout center-dark (padding 0) сетка занимает весь слайд,
+   padding 3.5rem — выравнивание с полем контента слайда.
+   Слева — «Спасибо!» + главный вывод, справа — контакты + ссылка на слайды. */
+.final-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  width: 100%;
+  padding: 2rem 3.5rem;
+}
+.final-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.final-takeaway {
+  margin-top: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.012em;
+  color: var(--on-dark);
+}
+.final-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
 }
