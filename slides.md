@@ -37,8 +37,6 @@ fonts:
   <img class="cover-proof-chart" src="/img/tokens-chart.svg" alt="Total tokens per day — пик 2026-09-01, 1 043 495 767 токенов">
 </div>
 
-<div class="draft-stamp">Черновик</div>
-
 <!--
 Приветствие, представление, 1-2 минуты.
 -->

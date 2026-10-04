@@ -59,8 +59,8 @@
 
 ## Стек
 
-- **Slidev** (v52+) — Markdown-слайды на Vite + Vue 3 + UnoCSS
-- Node.js >= 20.12.0
+- **Slidev** (v53+) — Markdown-слайды на Vite + Vue 3 + UnoCSS
+- Node.js >= 22.12.0
 - Пакет-менеджер: pnpm (также работают npm/yarn)
 
 ## Команды

@@ -459,26 +459,6 @@
   height: auto;
 }
 
-/* «Штамп» черновика на обложке: повёрнутый полупрозрачный штамп справа,
-   между лого (верх) и графиком (низ) — в пустой зоне правой половины */
-.draft-stamp {
-  position: absolute;
-  top: 36%;
-  right: 2.5rem;
-  transform: translateY(-50%) rotate(-8deg);
-  font-family: var(--font-mono);
-  font-size: 1.6rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: rgba(239, 68, 68, 0.8);
-  border: 3px solid rgba(239, 68, 68, 0.8);
-  border-radius: 10px;
-  padding: 0.45rem 1.1rem 0.45rem 1.28rem;
-  pointer-events: none;
-  user-select: none;
-}
-
 /* ── Слайд 2: план + о докладчике ───────────────────────────────────── */
 /* Колонки two-cols: план (Toc) — 60%, карточка докладчика — 40%
    (two-cols — grid grid-cols-2, переопределяем grid-template-columns) */
