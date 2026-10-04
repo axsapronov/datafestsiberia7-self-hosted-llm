@@ -7,6 +7,10 @@
 > **Qwen3.8-27B** на **2×RTX 3090 (24 GB)**: алгоритм, схемы, примеры конфигов vLLM
 > (до кастомных патчей движка), результаты прогонов и публичные эталоны.
 >
+> Это **single-node reference**. «1 млрд токенов/сутки» — кластерная метрика
+> (input+output по всем моделям), которая складывается из нескольких узлов,
+> балансировки и mix-а workload'а.
+>
 > Слайды: [slides-export.pdf](https://github.com/axsapronov/datafestsiberia7-self-hosted-llm/blob/main/slides-export.pdf) ·
 > репозиторий доклада: [axsapronov/datafestsiberia7-self-hosted-llm](https://github.com/axsapronov/datafestsiberia7-self-hosted-llm)
 
@@ -41,6 +45,11 @@ Single-user 8192              154 |███████████████
 
 Главный вывод: **крупный прирост даёт не «ещё одна опция», а сочетание**
 W4A16-весов, FP8 KV-кэша, DFlash2-драфтера и правильного CUDA-graph режима.
+
+Связь с «1 млрд токенов/сутки»: 1B/86400 ≈ **11.6k токенов/сек в среднем**.
+Один узел из этого документа — эталонный building block: ~420 output tok/s
+в синтетическом 5-parallel и ~1.4k prefill tok/s. В кластере такие узлы
+масштабируются репликами + LLM-aware балансировкой (§11).
 
 ---
 
@@ -112,7 +121,8 @@ flowchart LR
 ## 4. Конфиги vLLM (до кастомных патчей движка)
 
 Ниже — **stock vLLM 0.30**, без кастомных патчей движка.
-Это базовый воспроизводимый рецепт.
+Это базовый воспроизводимый рецепт. Флаги проверены на vLLM 0.30; в других
+версиях имена и поддержка KV-offload / Mamba-опций могут отличаться.
 
 > Важно: в нашем production-образе дополнительно используются патчи под
 > гибридную Mamba-архитектуру, async-scheduling и квантованные draft-модули.
@@ -266,6 +276,9 @@ flowchart TB
 Разные ноды/recreate дают ±10% шум, поэтому для выводов важнее
 структурные метрики: KV-пул, acceptance, preemptions, ITL.
 
+Часть строк — с production-сборкой (патчи стабильности / fine-tuned drafter).
+Для stock-конфига из §4 ожидайте тот же порядок, но не гарантирую последние 3–5%.
+
 ### 6.1 Прогрессия конфигураций
 
 | Стадия | Конфиг | count-100 | 5-parallel | KV-пул | Комментарий |
@@ -386,6 +399,8 @@ W8A16-квант драфтера — tradeoff: минус ~2.8 pts acceptance �
 | [incoai/Qwen3.8-27B-DFlash2](https://huggingface.co/incoai/Qwen3.8-27B-DFlash2) | **DFlash2 bf16** (~3.85 GB), работает в stock vLLM |
 | [syvai/Qwen3.8-27B-DFlash2-W4A16](https://huggingface.co/syvai/Qwen3.8-27B-DFlash2-W4A16) | DFlash2 W4A16 (~1.2 GB), нужен патч движка |
 
+Некоторые Swift-чекпоинты могут быть gated: нужен HF-аккаунт и принятие license.
+
 ---
 
 ## 9. Спекулятивное декодирование: MTP vs DFlash2
@@ -422,12 +437,76 @@ W8A16-квант драфтера — tradeoff: минус ~2.8 pts acceptance �
 |---|---|
 | [noonghunna/club-3090](https://github.com/noonghunna/club-3090) | **community-рецепты для 1×/2×/N× RTX 3090**: vLLM/llama.cpp/SGLang, compose-конфиги, патчи, бенчмарки |
 | [tonyd2wild/Qwen3.8-27B-DFLASH2-AutoRound-W4A16-2x3090](https://github.com/tonyd2wild/Qwen3.8-27B-DFLASH2-AutoRound-W4A16-2x3090) | ближайший аналог: 2×3090, W4A16 + DFlash2 + FP8 KV; DFlash2 101.1 vs MTP 77.8 tok/s |
-| [syv-ai/qwen38-27b-rtx3090](https://github.com/syv-ai/qwen38-27b-rtx3090) | 1×3090: тюнёный MTP-стек (111–120 tok/s) vs DFlash2 |
+| [syv-ai/HyperQwen](https://github.com/syv-ai/HyperQwen) | 1×3090: Qwen3.8-27B на одной 24 GB — 127 tok/s single-user, ~1035 tok/s aggregate @64, 150k–262k контекст |
 | [alesha-pro/qwen38-27b-bench-4x3090](https://github.com/alesha-pro/qwen38-27b-bench-4x3090) | 4×3090: vLLM vs SGLang бенчмарки |
 
 ---
 
-## 11. Что не сработало (честно)
+## 11. Если узлов больше: балансировка LLM-трафика
+
+Один узел — это building block. В кластере из нескольких 2×3090 / 4×3090 узлов
+главный риск — не «мало GPU», а то, что обычный балансировщик не видит состояние
+LLM-реплики: очередь, `num_running` / `num_waiting`, KV-кэш, локальность prefix.
+
+Без LLM-aware балансировки типично:
+
+- round-robin кладёт короткий чат и 100K-prefill на одну и ту же реплику;
+- TTFT проседает, когда на одну реплику попадает несколько длинных prefill'ов;
+- multi-turn сессия мигрирует между репликами и теряет prefix/KV cache;
+- «горячая» реплика копит длинные decode, пока другие простаивают;
+- stuck-реплика продолжает получать трафик, пока её вручную не выключить.
+
+Поэтому перед кластером нужен прокси-слой, который роутит OpenAI-совместимые
+запросы по **load + affinity + health**, а не просто по числу соединений.
+
+### vLLM Router (upstream)
+
+[vLLM Router](https://github.com/vllm-project/router) — официальный лёгкий роутер
+для флотов vLLM (Rust, `pip install vllm-router`). Основные политики:
+
+- `round_robin` / `random` — stateless-распределение;
+- `consistent_hash` — sticky session/user по `X-Session-ID`, `X-User-ID` или body;
+- `power_of_two` — выбрать двух healthy worker'ов и отправить запрос на менее загруженного;
+- `cache_aware` — router-side radix tree prefix'ов per worker: при сбалансированной
+  нагрузке идёт за prefix-hit, при перекосе — за минимальной очередью;
+- health: retries, circuit breakers, Prometheus-метрики, Kubernetes service discovery;
+- P/D: нативная оркестрация prefill/decode disaggregation.
+
+### Наш `gpustack-lb` (пока не публичный)
+
+Под свой стек (GPUStack + vLLM-воркеры на bare-metal 3090-узлах) мы используем
+собственный LLM-aware балансировщик `gpustack-lb`. Принцип работы:
+
+- непрерывно читает `/metrics` vLLM: `num_running`, `num_waiting`, KV, spec-decode;
+- считает effective load: `max(scraped running, in-flight WLC)` + очередь;
+- выбирает least-loaded среди `LIVE` / `PROBING` реплик;
+- **soft session/prefix affinity**: session-стик держит диалог на «тёплом» KV-кэше,
+  но при сильном load skew переезжает; prefix-стик отпускается агрессивнее,
+  чтобы общий system prompt не «цементировал» трафик на одной ноде;
+- **health**: `LIVE / PROBING / EJECTED`, активные пробы `/metrics` без пользовательского
+  трафика, экспоненциальный cooldown при повторных eject;
+- observability: traffic share, affinity %, spill/rebind/eject rates.
+
+### Сравнение
+
+| | vLLM Router | `gpustack-lb` |
+|---|---|---|
+| Статус | upstream, публичный | наш, пока не публичный |
+| Целевой стек | флот vLLM, K8s / bare metal, gRPC workers | GPUStack + vLLM-воркеры |
+| Сигнал нагрузки | pending requests / состояние политик | scraped vLLM `/metrics` + per-request WLC |
+| Affinity | `consistent_hash`, `cache_aware` | soft session/prefix с TTL и force-rebind |
+| Health | circuit breakers, retries, K8s discovery | `LIVE/PROBING/EJECTED` + active `/metrics` probes |
+| P/D disaggregation | да | нет (нам не нужен) |
+| Когда брать | чистый vLLM-флот, K8s, P/D | GPUStack-кластер, mixed agent workload, bare metal |
+
+Коротко: **vLLM Router** — стандартный выбор для vLLM-флота. `gpustack-lb` мы
+написали под свои условия: GPUStack, consumer-GPU узлы, много agent-сессий с
+длинными prefix'ами и требование, чтобы sticky не превращался в монополию
+одной перегретой реплики.
+
+---
+
+## 12. Что не сработало (честно)
 
 | Попробовали | Ожидали | Получили |
 |---|---|---|
@@ -441,17 +520,20 @@ W8A16-квант драфтера — tradeoff: минус ~2.8 pts acceptance �
 
 ---
 
-## 12. Чек-лист воспроизведения
+## 13. Чек-лист воспроизведения
 
 - [ ] 2×RTX 3090 (24 GB), driver, Docker + NVIDIA Container Toolkit
+- [ ] RAM ≥ 64 GB (для 256K + KV-offload), ≥ 100 GB SSD под веса/кэши, HF-токен для gated-чекпоинтов
 - [ ] vLLM **0.30** (stock, без кастомных патчей)
 - [ ] Таргет: AWQ W4A16 чекпоинт Qwen3.8-27B
 - [ ] Drafter: `incoai/Qwen3.8-27B-DFlash2` (bf16)
 - [ ] Запуск по [§4.3](#43-рекомендуемый-dflash2-отдельный-block-diffusion-drafter)
+- [ ] Минимальная проверка: `curl -s :8000/v1/models` и `curl -s :8000/metrics | grep spec_decode`
 - [ ] В логе: `cudagraph PIECEWISE`, KV-пул ~470K, 0 Xid/OOM
 - [ ] Прогнать протокол из [§7](#7-как-мерить)
 - [ ] Сверить: count-100 ~140–150, acceptance ~50%, 5-parallel ~400+
 - [ ] При необходимости добавить KV-offload ([§4.4](#44-опционально-256k-конкурентность-через-kv-offload))
+- [ ] Для кластера: GPUStack + LLM-aware LB — `vllm-router` или наш `gpustack-lb` (см. §11)
 
 ---
 
