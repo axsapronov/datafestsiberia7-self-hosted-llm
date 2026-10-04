@@ -73,7 +73,7 @@ title: Зачем собирать свою ИИ-инфраструктуру?
 
 # ИИ в 2026 — удобная и дорогая технология
 
-<img class="data-chart" src="/img/ai-spend-milestones.svg" alt="AI Spend per Employee vs Model Releases and Technology Milestones, Ramp AI Index Top 1% 2023–2026: flat 2023–2024 (~$160/employee), 4× growth mid-2025 ($2,470), explosion to ~$9,000 by Sep 2026">
+<img class="data-chart" style="max-height:400px" src="/img/ai-spend-milestones.svg" alt="AI Spend per Employee vs Model Releases and Technology Milestones, Ramp AI Index Top 1% 2023–2026: flat 2023–2024 (~$160/employee), 4× growth mid-2025 ($2,470), explosion to ~$9,000 by Sep 2026">
 
 <!--
 ИИ - это дорогая технология, которая стремится снизить себестоимость на масштабе.
