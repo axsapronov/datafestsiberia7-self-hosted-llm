@@ -119,3 +119,5 @@ components.d.ts
 *.tmp.mjs
 # временные скриншоты для подгонки под слайды
 public/img/gpustack/temp/
+.coverage
+.vscode/coverage.xml

@@ -7,9 +7,6 @@
 > **Qwen3.8-27B** на **2×RTX 3090 (24 GB)**: алгоритм, схемы, примеры конфигов vLLM
 > (до кастомных патчей движка), результаты прогонов и публичные эталоны.
 >
-> Это **single-node reference**. «1 млрд токенов/сутки» — кластерная метрика
-> (input+output по всем моделям), которая складывается из нескольких узлов,
-> балансировки и mix-а workload'а.
 >
 > Слайды: [slides-export.pdf](https://github.com/axsapronov/datafestsiberia7-self-hosted-llm/blob/main/slides-export.pdf) ·
 > репозиторий доклада: [axsapronov/datafestsiberia7-self-hosted-llm](https://github.com/axsapronov/datafestsiberia7-self-hosted-llm)
