@@ -840,6 +840,7 @@ title: Что в итоге?
 
 ---
 title: Стабилизация — агенты, балансер, vllm
+class: stepper-slide
 ---
 
 <div class="slidev-slide-number"><SlideCurrentNo /> / <SlidesTotal /></div>

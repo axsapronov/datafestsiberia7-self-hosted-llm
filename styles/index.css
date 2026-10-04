@@ -297,16 +297,19 @@
   text-align: center;
 }
 
-/* Слайды-степперы (Stepper): прижаты под заголовок (как .data-chart и
-   .hw-grid на соседних слайдах), чтобы верх совпадал с ними;
+/* Слайды-степперы (Stepper): колонка. Заголовок (h1) — наверху;
+   .fls-row растягивается на всё оставшееся пространство (flex: 1) и
+   центрирует карточки по вертикали (align-items: center) — схема по центру
+   между заголовком и footer, а не прижата под заголовок.
    footer (hook-line) — общим правилом .hook-line */
 .slidev-layout.stepper-slide {
   display: flex;
   flex-direction: column;
 }
 .slidev-layout.stepper-slide .fls-row {
-  align-items: flex-start;
-  margin-top: 0.5rem;
+  flex: 1;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
 /* Слайд с регуляторным таймлайном: компактный трек (~58% высоты слайда),

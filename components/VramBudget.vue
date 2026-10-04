@@ -123,7 +123,7 @@ const ticks = [0, 16, 32, 48, 64]
       <div class="vb-step">
         <div class="vb-step-head"><span class="vb-step-num">03</span>Квантизация</div>
         <div class="vb-step-text">по поколению GPU</div>
-        <div class="vb-step-val">Ampere (30**) → AWQ <br>Ada Lovelace (40**) → NVFP4</div>
+        <div class="vb-step-val">Ampere (30**) → AWQ (W4A16) <br>Ada Lovelace (40**) → NVFP4</div>
       </div>
     </div>
   </div>
