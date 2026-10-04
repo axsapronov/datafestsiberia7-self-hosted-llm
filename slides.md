@@ -52,7 +52,9 @@ hideInToc: true
 
 ::left::
 
+<div style="margin-top: 2.5rem;">
 <Toc minDepth="1" maxDepth="1" />
+</div>
 
 ::right::
 
