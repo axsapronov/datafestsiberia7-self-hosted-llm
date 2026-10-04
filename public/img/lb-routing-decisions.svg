@@ -1,86 +1,92 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 316" role="img" aria-label="3 реплики, балансер в деле: R1 — сессия привязана к реплике с тёплым кэшем (cache hit, TTFT 350→80 мс); R2 — vLLM забита (waiting=4), исключена из роутинга (EJECTED), запросы на неё не отправляются; R3 — холодная, сюда уходят новые сессии">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 480" role="img" aria-label="После: LLM-трафик с cache+load-aware роутером. Тот же неоднородный трафик. Router роутит по кэшу и нагрузке: Реплика #1 — sticky, сессия на тёплом кэше (cache hit, TTFT 350→80 мс); Реплика #2 — cold/least-loaded, сюда уходят новые сессии; забитая реплика (waiting>0) — вне роутинга.">
   <defs>
     <pattern id="hatch-amber" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <rect width="6" height="6" fill="#f59e0b" opacity="0.14"/>
       <line x1="0" y1="0" x2="0" y2="6" stroke="#f59e0b" stroke-width="2" opacity="0.5"/>
     </pattern>
+    <marker id="arrow-green" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#10b981"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#3b82f6"/>
+    </marker>
   </defs>
 
   <g font-family="Inter, -apple-system, 'Segoe UI', sans-serif">
 
-    <!-- ── Панель · балансер в деле ───────────────────────────────────── -->
-    <rect x="8" y="6" width="864" height="310" rx="14" fill="#f5f5f5" stroke="#e5e7eb"/>
-    <text x="28" y="28" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="500" letter-spacing="0.08em" fill="#6b7280">3 РЕПЛИКИ · 12 СЕК · BALANCER В ДЕЛЕ</text>
+    <!-- ── Панель · после (с роутером) ────────────────────────────────── -->
+    <rect x="8" y="6" width="1144" height="474" rx="14" fill="#f5f5f5" stroke="#e5e7eb"/>
+    <text x="28" y="28" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="13" font-weight="500" letter-spacing="0.08em" fill="#6b7280">2 РЕПЛИКИ · LLM-ТРАФИК · С РОУТЕРОМ</text>
+    <rect x="1036" y="13" width="96" height="24" rx="12" fill="#10b981" opacity="0.12"/>
+    <text x="1084" y="29" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" font-weight="600" letter-spacing="0.08em" fill="#047857" text-anchor="middle">ПОСЛЕ</text>
 
-    <!-- grid -->
-    <g stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3 3" opacity="0.7">
-      <line x1="56" y1="36" x2="56" y2="226"/>
-      <line x1="189.3" y1="36" x2="189.3" y2="226"/>
-      <line x1="322.7" y1="36" x2="322.7" y2="226"/>
-      <line x1="456" y1="36" x2="456" y2="226"/>
-      <line x1="589.3" y1="36" x2="589.3" y2="226"/>
-      <line x1="722.7" y1="36" x2="722.7" y2="226"/>
-      <line x1="856" y1="36" x2="856" y2="226"/>
-    </g>
-
-    <!-- lane labels -->
-    <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" font-weight="600" fill="#111111">
-      <text x="28" y="53">R1</text>
-      <text x="28" y="119">R2</text>
-      <text x="28" y="185">R3</text>
-    </g>
-
-    <!-- R1: sticky — сессия на реплике с тёплым кэшем -->
-    <rect x="56" y="60" width="800" height="12" rx="3" fill="#10b981" opacity="0.6"/>
-    <text x="848" y="69" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#047857" text-anchor="end">warm</text>
+    <!-- ── Входящий LLM-трафик (тот же) ───────────────────────────────── -->
+    <text x="28" y="48" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="13" font-weight="500" letter-spacing="0.08em" fill="#6b7280">ВХОДЯЩИЙ LLM-ТРАФИК</text>
     <g>
-      <rect x="122.7" y="42" width="100" height="14" rx="4" fill="#3b82f6"/>
-      <rect x="322.7" y="42" width="100" height="14" rx="4" fill="#3b82f6"/>
-      <rect x="522.7" y="42" width="100" height="14" rx="4" fill="#3b82f6"/>
-      <text x="130" y="52" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#ffffff">session · hit</text>
+      <rect x="28" y="56" width="30" height="24" rx="5" fill="#d1d5db"/>
+      <rect x="63" y="56" width="30" height="24" rx="5" fill="#d1d5db"/>
+      <rect x="98" y="56" width="113" height="24" rx="5" fill="#3b82f6"/>
+      <text x="155" y="72" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">чат · 10 с</text>
+      <rect x="216" y="56" width="268" height="24" rx="5" fill="#ec4899"/>
+      <text x="350" y="72" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">агент · 1 мин · 100k prefill</text>
+      <rect x="491" y="56" width="30" height="24" rx="5" fill="#d1d5db"/>
+      <rect x="528" y="56" width="113" height="24" rx="5" fill="#3b82f6"/>
+      <text x="585" y="72" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">чат · 10 с</text>
+      <rect x="645" y="56" width="30" height="24" rx="5" fill="#d1d5db"/>
+      <rect x="679" y="56" width="113" height="24" rx="5" fill="#3b82f6"/>
+      <text x="736" y="72" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">чат · 10 с</text>
+      <rect x="794" y="56" width="268" height="24" rx="5" fill="#ec4899"/>
+      <text x="928" y="72" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">агент · 1 мин · 100k prefill</text>
+      <rect x="1069" y="56" width="30" height="24" rx="5" fill="#d1d5db"/>
+      <rect x="1104" y="56" width="30" height="24" rx="5" fill="#d1d5db"/>
     </g>
+    <text x="28" y="92" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#9ca3af">тот же трафик — теперь роутит по кэшу и нагрузке</text>
 
-    <!-- R2: vLLM забита — вне роутинга -->
-    <rect x="56" y="108" width="800" height="14" rx="4" fill="url(#hatch-amber)" stroke="#f59e0b" stroke-width="1"/>
-    <text x="124" y="118" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" fill="#b45309">vLLM: waiting = 4 · забита</text>
-    <rect x="50" y="106" width="64" height="17" rx="3" fill="#ef4444"/>
-    <text x="82" y="118" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9" fill="#ffffff" text-anchor="middle" letter-spacing="0.05em">EJECTED</text>
-    <rect x="56" y="126" width="800" height="12" rx="3" fill="#e5e7eb" opacity="0.6"/>
+    <!-- ── Router (cache + load aware) ────────────────────────────────── -->
+    <rect x="470" y="132" width="220" height="44" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+    <text x="580" y="150" font-size="15" font-weight="600" fill="#047857" text-anchor="middle">Router</text>
+    <text x="580" y="166" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#047857" text-anchor="middle">cache + load aware</text>
+    <line x1="540" y1="176" x2="294" y2="210" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+    <line x1="620" y1="176" x2="866" y2="210" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
 
-    <!-- R3: холодная — новые сессии сюда -->
-    <g>
-      <rect x="122.7" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
-      <rect x="322.7" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
-      <rect x="522.7" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
-      <rect x="722.7" y="174" width="100" height="14" rx="4" fill="#3b82f6"/>
-      <text x="130" y="184" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#ffffff">new session</text>
-    </g>
-    <rect x="50" y="172" width="52" height="17" rx="3" fill="#3b82f6"/>
-    <text x="76" y="184" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9" fill="#ffffff" text-anchor="middle" letter-spacing="0.05em">COLD</text>
-    <g fill="#10b981" opacity="0.5">
-      <rect x="122.7" y="192" width="100" height="12" rx="2"/>
-      <rect x="322.7" y="192" width="100" height="12" rx="2"/>
-      <rect x="522.7" y="192" width="100" height="12" rx="2"/>
-      <rect x="722.7" y="192" width="100" height="12" rx="2"/>
-    </g>
+    <!-- ── Реплика #1 · sticky, тёплый кэш ────────────────────────────── -->
+    <rect x="28" y="210" width="532" height="118" rx="10" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+    <text x="40" y="230" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="600" fill="#111111">Реплика #1</text>
+    <rect x="150" y="218" width="69" height="16" rx="3" fill="#10b981"/>
+    <text x="184" y="230" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="600" fill="#ffffff" text-anchor="middle" letter-spacing="0.05em">STICKY</text>
+    <rect x="44" y="238" width="160" height="20" rx="4" fill="#3b82f6"/>
+    <text x="124" y="252" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">session · hit</text>
+    <rect x="214" y="238" width="160" height="20" rx="4" fill="#3b82f6"/>
+    <text x="294" y="252" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">session · hit</text>
+    <rect x="384" y="238" width="160" height="20" rx="4" fill="#3b82f6"/>
+    <text x="464" y="252" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">session · hit</text>
+    <rect x="40" y="280" width="500" height="14" rx="3" fill="#10b981" opacity="0.6"/>
+    <text x="540" y="291" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#047857" text-anchor="end">warm · cache hit</text>
+    <text x="40" y="316" font-size="13" fill="#047857">→ сессия на тёплом кэше: TTFT 350 → 80 мс (4.4×)</text>
 
-    <!-- time ticks -->
-    <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="#898989" text-anchor="middle">
-      <text x="56" y="238">0 s</text>
-      <text x="189.3" y="238">2 s</text>
-      <text x="322.7" y="238">4 s</text>
-      <text x="456" y="238">6 s</text>
-      <text x="589.3" y="238">8 s</text>
-      <text x="722.7" y="238">10 s</text>
-      <text x="856" y="238">12 s</text>
-    </g>
+    <!-- ── Реплика #2 · cold, новые сессии (least-loaded) ─────────────── -->
+    <rect x="600" y="210" width="532" height="118" rx="10" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="612" y="230" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="600" fill="#111111">Реплика #2</text>
+    <rect x="722" y="218" width="85" height="16" rx="3" fill="#3b82f6"/>
+    <text x="764" y="230" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="600" fill="#ffffff" text-anchor="middle" letter-spacing="0.05em">COLD</text>
+    <rect x="616" y="238" width="160" height="20" rx="4" fill="#3b82f6"/>
+    <text x="696" y="252" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">new session</text>
+    <rect x="786" y="238" width="160" height="20" rx="4" fill="#3b82f6"/>
+    <text x="866" y="252" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">new session</text>
+    <rect x="956" y="238" width="160" height="20" rx="4" fill="#3b82f6"/>
+    <text x="1036" y="252" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#ffffff" text-anchor="middle">new session</text>
+    <rect x="612" y="280" width="505" height="14" rx="3" fill="#10b981" opacity="0.4"/>
+    <text x="1117" y="291" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#047857" text-anchor="end">кэш растёт</text>
+    <text x="612" y="316" font-size="13" fill="#1d4ed8">→ новые сессии — сюда (least-loaded), не в чужую очередь</text>
 
-    <!-- annotations -->
-    <circle cx="33" cy="254" r="4" fill="#10b981"/>
-    <text x="44" y="258" font-size="12" fill="#374151">sticky: следующий ход сессии — на реплику с тёплым кэшем: TTFT 350 → 80 мс (4.4×)</text>
-    <circle cx="33" cy="276" r="4" fill="#ef4444"/>
-    <text x="44" y="280" font-size="12" fill="#374151">забитая vLLM-реплика (waiting &gt; 0) — вне роутинга: запросы на неё не отправляются</text>
-    <circle cx="33" cy="298" r="4" fill="#3b82f6"/>
-    <text x="44" y="302" font-size="12" fill="#374151">новая сессия — на холодную реплику: не в чужую очередь, не на самую загрузку</text>
+    <!-- ── Легенда · 3 решения роутера ────────────────────────────────── -->
+    <circle cx="32" cy="382" r="4" fill="#10b981"/>
+    <text x="42" y="386" font-size="13" fill="#374151">sticky: сессия — на реплику с тёплым кэшем</text>
+    <circle cx="32" cy="404" r="4" fill="#3b82f6"/>
+    <text x="42" y="408" font-size="13" fill="#374151">cold: новая сессия — на least-loaded</text>
+    <circle cx="600" cy="382" r="4" fill="#ef4444"/>
+    <text x="610" y="386" font-size="13" fill="#374151">load: забитая (waiting &gt; 0) — вне роутинга</text>
+    <circle cx="600" cy="404" r="4" fill="#10b981"/>
+    <text x="610" y="408" font-size="13" fill="#374151">health: LIVE ⇄ PROBING ⇄ EJECTED</text>
   </g>
 </svg>

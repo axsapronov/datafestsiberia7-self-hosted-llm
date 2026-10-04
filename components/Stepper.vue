@@ -99,10 +99,10 @@ const props = defineProps<{
 .fls-card {
   flex: 1;
   min-width: 0;
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
-  background: var(--surface-card);
+  min-height: 240px;
+   display: flex;
+   flex-direction: column;
+   background: var(--surface-card);
   border: 1px solid var(--hairline);
   border-radius: 12px;
   padding: 0.85rem 0.8rem;
@@ -202,8 +202,8 @@ const props = defineProps<{
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 280px;
-  color: var(--muted-soft);
+  min-height: 240px;
+   color: var(--muted-soft);
 }
 
 /* Тёмная featured-карточка — единственный тёмный surface, закрывает последовательность */

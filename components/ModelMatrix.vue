@@ -98,6 +98,7 @@ const COLUMNS: Column[] = [
   border: 1px solid var(--hairline);
   border-radius: 14px;
   padding: 0.9rem 1rem;
+  margin-top: 1.5rem;
 }
 
 .mm-col-featured {
@@ -152,12 +153,11 @@ const COLUMNS: Column[] = [
 }
 
 .mm-name {
-  font-size: 0.88rem;
-  font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  white-space: nowrap;
+   font-size: 0.88rem;
+   font-weight: 500;
+   line-height: 1.25;
+   letter-spacing: -0.01em;
+   color: var(--ink);
 }
 
 .mm-model-featured .mm-name {

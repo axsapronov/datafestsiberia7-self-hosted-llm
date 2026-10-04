@@ -117,3 +117,5 @@ components.d.ts
 .kilo/plans
 .shot*.mjs
 *.tmp.mjs
+# временные скриншоты для подгонки под слайды
+public/img/gpustack/temp/

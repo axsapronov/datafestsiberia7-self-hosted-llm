@@ -1,10 +1,10 @@
 <script setup lang="ts">
 // GPUStack — панель управления self-hosted.
-// 2×2 сетка из 4 карточек: каждая — скриншот реального UI + подпись-возможность
+// 2×2 сетка из 4 карточек 16:9: каждая — скриншот реального UI в формате 16:9
+// (public/img/gpustack/gpustack-*.png) + подпись-возможность
 // (Модели / Движки / API / Статистика) поверх изображения.
-// Кропы — «полные» окна страниц (ничего не обрезано внутри картинки,
-// public/img/gpustack/gpustack-*.png) и показаны через object-fit: contain
-// на белой карточке: браузер ничего не подрезает, поля сливаются с фоном.
+// Карточки 16:9 (стандарт для UI-скриншотов) — картинки того же формата
+// вписываются без полей (object-fit: contain).
 
 interface Capability {
   dot: string
@@ -29,7 +29,7 @@ const CAPS: Capability[] = [
     label: 'Движки',
     desc: 'подключаемые inference-рантаймы',
     img: '/img/gpustack/gpustack-engines.png',
-    alt: 'GPUStack Deployments: модель qwen3.5-0.8b, реплики 1/1, статус Running',
+    alt: 'GPUStack Inference Backends: vLLM, SGLang, MindIE, VoxBox, llama.cpp, PaddleX, Text-Embeddings-Inference',
   },
   {
     dot: '#f59e0b',
@@ -67,20 +67,20 @@ const CAPS: Capability[] = [
 .gs {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
   gap: 0.55rem;
-  width: 100%;
-  height: 398px;
-  margin-top: 0.4rem;
+  /* Заполняем ширину слайда (подпись снизу убрана) — карточки 16:9 крупнее и читабельнее */
+  width: 92%;
+  margin: 0.4rem auto 0;
 }
 
 .gs-card {
   position: relative;
-  min-height: 0;
+  /* 16:9 — стандарт для UI-скриншотов: картинки того же формата вписываются без полей */
+  aspect-ratio: 16 / 9;
   border: 1px solid var(--hairline);
   border-radius: 12px;
   overflow: hidden;
-  /* Белый фон = фон скриншотов: поля при object-fit: contain сливаются с картинкой */
   background: #fff;
 }
 

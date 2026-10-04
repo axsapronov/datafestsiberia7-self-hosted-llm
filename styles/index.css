@@ -68,13 +68,14 @@
    padding-top уменьшен (1rem vs базовые 2.5rem из py-10), чтобы заголовок был
    ближе к верху и контента было больше; нижний padding (2.5rem) — без изменений. */
 .slidev-layout {
-  position: relative;
-  background: var(--slide-top-mesh), var(--canvas);
-  color: var(--body);
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.5;
-  padding-top: 1rem;
+   position: relative;
+   overflow: hidden;
+   background: var(--slide-top-mesh), var(--canvas);
+   color: var(--body);
+   font-family: var(--font-sans);
+   font-size: 1rem;
+   line-height: 1.5;
+   padding-top: 1rem;
 }
 
 /* Обложка и центрированные слайды — тот же холст
@@ -84,6 +85,17 @@
 .slidev-layout.full,
 .slidev-layout.statement {
   background: var(--slide-top-mesh), var(--canvas);
+}
+
+/* Default-layout: колонка. Заголовок (h1) остаётся наверху, на своём месте;
+   центрируется только контент — первый элемент после h1. Без этого контент
+   прижат к верху (padding-top 1rem), внизу остаётся пустое поле.
+   margin: auto на контенте центрирует его в пространстве под заголовком.
+   hook-line и номер слайда — absolute, в flex-потоке не участвуют. */
+
+.slidev-layout.default > h1 + * {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 /* Display-типографика: Inter 600 + negative letter-spacing (замена Cal Sans) */
@@ -212,9 +224,11 @@
 
 /* Данные-графики (SVG из public/img): заполняют колонку, прозрачный фон */
 .data-chart {
-  display: block;
-  width: 100%;
-  height: auto;
+   display: block;
+   width: 100%;
+   height: auto;
+   max-height: 320px;
+   object-fit: contain;
 }
 .data-chart-wrap {
   margin-top: 0.3rem;
@@ -224,11 +238,13 @@
    центрируется под таблицей EngineCompare, ограничена по ширине, чтобы
    уложиться над hook-line внизу */
 .model-load-path {
-  display: block;
-  width: 68%;
-  max-width: 620px;
-  height: auto;
-  margin: 1.2rem auto 0;
+   display: block;
+   width: 68%;
+   max-width: 620px;
+   height: auto;
+   max-height: 150px;
+   object-fit: contain;
+   margin: 1.2rem auto 0;
 }
 
 /* Скриншот UI (GPUStack): широкий баннер, hairline-бордер, скругление */
