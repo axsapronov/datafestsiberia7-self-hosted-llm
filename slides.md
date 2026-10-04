@@ -890,17 +890,17 @@ hideInToc: true
 ---
 
 <div class="final-grid">
-  <div class="final-left">
-    <h1 class="thanks-title">Спасибо!</h1>
-    <div class="thanks-sub">Вопросы?</div>
-    <p class="final-takeaway"><strong>1 млрд токенов в сутки — это про комбинацию железа + модели + конфигов + эксперименты.</strong></p>
-  </div>
-  <div class="final-right">
+  <div class="final-top">
+    <h1 class="thanks-title">Спасибо! Вопросы?</h1>
+    <div>1 млрд токенов в сутки — это про комбинацию железа + модели + конфигов + эксперименты.</div>
     <div class="thanks-contact">
       <div class="thanks-name">Александр Сапронов</div>
       <div class="thanks-links"><a href="mailto:a@sapronov.me">a@sapronov.me</a> · <a href="https://t.me/axsapronov">t.me/axsapronov</a></div>
     </div>
-    <QrCode url="https://github.com/axsapronov/datafestsiberia7-self-hosted-llm/blob/main/slides-export.pdf" :size="248" caption="Ссылка на слайды" />
+  </div>
+  <div class="final-qr-row">
+    <QrCode icon="wrench" url="https://github.com/axsapronov/datafestsiberia7-self-hosted-llm/blob/main/REPRODUCE.md" :size="230" caption="как повторить" />
+    <QrCode icon="slides" url="https://github.com/axsapronov/datafestsiberia7-self-hosted-llm/blob/main/slides-export.pdf" :size="230" caption="слайды" />
   </div>
 </div>
 

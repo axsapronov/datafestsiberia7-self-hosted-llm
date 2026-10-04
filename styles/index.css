@@ -583,8 +583,8 @@
 .slidev-layout .thanks-contact {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  margin-top: 0.4rem;
+  gap: 0.2rem;
+  margin-top: 0.2rem;
 }
 .slidev-layout .thanks-name {
   font-size: 1.3rem;
@@ -601,35 +601,39 @@
   text-decoration: none;
 }
 
-/* ── Финальный слайд: две колонки (выводы + контакты) ───────────────────
+/* ── Финальный слайд: сверху «Спасибо!» + вывод + контакты,
+   снизу — два QR-кода (как повторить / ссылка на слайды) ─────────────────
    На layout center-dark (padding 0) сетка занимает весь слайд,
-   padding 3.5rem — выравнивание с полем контента слайда.
-   Слева — «Спасибо!» + главный вывод, справа — контакты + ссылка на слайды. */
+   padding 3.5rem — выравнивание с полем контента слайда. */
 .final-grid {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 3rem;
-  align-items: center;
-  width: 100%;
-  padding: 2rem 3.5rem;
-}
-.final-left {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.5rem 3.5rem;
+}
+.final-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  text-align: center;
+}
+.slidev-layout.center-dark .final-top .thanks-title {
+  font-size: 3.25rem;
 }
 .final-takeaway {
-  margin-top: 0.5rem;
+  margin-top: 0;
   font-size: 1.3rem;
   font-weight: 500;
   line-height: 1.45;
   letter-spacing: -0.012em;
   color: var(--on-dark);
 }
-.final-right {
+.final-qr-row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 1.5rem;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 15rem;
 }
