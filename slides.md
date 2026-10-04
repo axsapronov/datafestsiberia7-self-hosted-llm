@@ -893,7 +893,7 @@ hideInToc: true
   <div class="final-left">
     <h1 class="thanks-title">Спасибо!</h1>
     <div class="thanks-sub">Вопросы?</div>
-    <p class="final-takeaway"><strong>1 млрд токенов в сутки — это не про железо.</strong> Это про то, что я перестал быть пользователем API и стал оператором инфраструктуры</p>
+    <p class="final-takeaway"><strong>1 млрд токенов в сутки — это про комбинацию железа + модели + конфигов + эксперименты.</strong></p>
   </div>
   <div class="final-right">
     <div class="thanks-contact">
