@@ -900,7 +900,7 @@ hideInToc: true
       <div class="thanks-name">Александр Сапронов</div>
       <div class="thanks-links"><a href="mailto:a@sapronov.me">a@sapronov.me</a> · <a href="https://t.me/axsapronov">t.me/axsapronov</a></div>
     </div>
-    <QrCode url="https://github.com/axsapronov/datafestsiberia7-self-hosted-llm/blob/main/slides-export.pdf" :size="124" caption="Ссылка на слайды" />
+    <QrCode url="https://github.com/axsapronov/datafestsiberia7-self-hosted-llm/blob/main/slides-export.pdf" :size="248" caption="Ссылка на слайды" />
   </div>
 </div>
 
