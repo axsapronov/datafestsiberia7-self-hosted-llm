@@ -60,7 +60,7 @@ hideInToc: true
   <img class="speaker-photo" src="/img/headshot.png" alt="Александр Сапронов">
   <div class="speaker-name">Александр Сапронов</div>
   <div class="speaker-role">IT Manager (CTO)</div>
-  <div class="speaker-bio">Решаю бизнес задачи в IT. <br>МТС, Avito, Welltory</div>
+  <div class="speaker-bio">Решаю бизнес-задачи в IT. <br>МТС, Avito, Welltory</div>
   <div class="speaker-contacts"><a href="https://t.me/axsapronov">t.me/axsapronov</a> · <a href="mailto:a@sapronov.me">a@sapronov.me</a></div>
 </div>
 
@@ -236,7 +236,7 @@ hideInToc: true
 - DeepSeek-OCR (~3B MoE, ~570M active) — batch OCR: MIT, MoE-роутинг даёт лучший
   cost per page для больших партий документов.
 - bond005/whisper-podlodka-turbo (~800M, Whisper-large-v3-turbo) — ASR (русский):
-  файнтюн под русскую речь, убирает ложные срабатывания на шумы.
+  файнтюнинг под русскую речь, убирает ложные срабатывания на шумы.
 Ключевой принцип: каждая спецзадача — своя маленькая модель. Не тащим 27B для OCR.
 
 ≤ 8B — RAG, поиск:
@@ -823,7 +823,7 @@ hideInToc: true
      circuit breaker (max_pending_requests) защищает KV от OOM (Neel Mishra).
 
 Чего не делаем (осознанно): composite score, consistent hashing, Power of Two, температура GPU
-(лагging-сигнал; running/waiting — прямое измерение нагрузки), slow-start в routing — только в Grafana.
+(lagging-сигнал; running/waiting — прямое измерение нагрузки), slow-start в routing — только в Grafana.
 Observability: Traffic Share, Affinity %, Spill Rate, Force-Rebind Rate, LIVE/PROBING/EJECTED,
 imbalance index + алерты (весь трафик на одной ноде, сломанный probe, prefix spill).
 -->
@@ -854,7 +854,7 @@ class: stepper-slide
     { num: '03', title: 'Модель', chip: 'AWQ+MTP', meta: 'модели · запуск · auto-restart' },
     { num: '04', title: 'Движок инференса', chip: 'vLLM', meta: 'модель на 2 видеокартах' },
     { num: '05', title: 'Балансировщик', chip: 'свой балансер', meta: 'липкие сессии' },
-    { num: '06', title: 'Нужно пользоваться', metric: '100+', unit: 'ток/сек для чел.', dark: false },
+    { num: '06', title: 'Можно пользоваться', metric: '100+', unit: 'ток/сек для чел.', dark: false },
   ]"
 />
 

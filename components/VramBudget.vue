@@ -102,7 +102,7 @@ const ticks = [0, 16, 32, 48, 64]
     <div class="vb-steps">
       <div class="vb-step">
         <div class="vb-step-head"><span class="vb-step-num">01</span>Возможный вес модели</div>
-        <div class="vb-step-text">Размер файлов модели − минимальный бъем VRAM</div>
+        <div class="vb-step-text">Размер файлов модели − минимальный объем VRAM</div>
         <div class="vb-step-val">14 GB → 14+ GB VRAM</div>
       </div>
       <div class="vb-arrow" aria-hidden="true">
